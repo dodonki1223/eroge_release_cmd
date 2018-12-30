@@ -1,93 +1,94 @@
 require 'nokogiri'
 require 'open-uri'
 
-# Fetch and parse HTML document
-# doc = Nokogiri::HTML(open('https://www.yahoo.co.jp/'))
-# File.open("test.html","w") do |text|
-#  text.puts(doc)
-# end
+# --------------------------------------
+# * 定数
+# --------------------------------------
+# げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURL
+GETCHYA_URI = "http://www.getchu.com/all/price.html"
+# げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページの固定のURLパラメーター
+# ※さらに「年」、「月」のパラメータがある
+FIXED_URL_PARAMETER = [["genre", "pc_soft"], ["gall", "all"]]
+# 「あなたは18歳以上ですか？」のページが表示されないようにするためのCookie設定
+COOKIE_OPTION = "getchu_adalt_flag=getchu.com"
 
-# puts "### Yahooから取得するぞ"
-# # doc.css('ul.emphasis li a').each do |link|
-# doc.css('table > tr > td > a').each do |link| 
-#   # aタグを取得し、hrefにpickupという文字列が存在したら画面に表示
-#   # ※ニュースの部分を表示
-#   puts link.content if link[:href].include?("pickup")
-# end
+# --------------------------------------
+# * スクレイピング対象のURLを作成
+# --------------------------------------
+# 変化するURLパラメーターを設定
+# ※今後はここを動的に設定できるようにする
+url_parameter_year = ["year", "2018"]
+url_parameter_month = ["month", "12"]
 
-cookie_option = "getchu_adalt_flag=getchu.com"
-# uri = "http://www.getchu.com/all/price.html?genre=pc_soft&year=2018&month=12&gall=all"
-uri = "http://www.getchu.com/all/price.html"
-url_parameter = URI.encode_www_form([
-    ["genre", "pc_soft"], 
-    ["gall", "all"],
-    ["year", "2018"], 
-    ["month", "12"]
-  ])
-full_uri = uri + "?" + url_parameter
+# 固定のURLパラメーターと変化するURLパラメーターから対象年月のURLパラメータを作成
+url_parameter = URI.encode_www_form(FIXED_URL_PARAMETER.push(url_parameter_year, url_parameter_month))
 
-page = URI.parse(full_uri)
+# URLパラーメータを付加した形のものを作成
+target_uri = GETCHYA_URI + "?" + url_parameter
 
-# p page.to_s
-# p page.request_uri
-# p page.scheme + "://" + page.host + page.path
-# p page.scheme + "://" + page.host
-# p page.scheme
-# p page.userinfo
-# p page.host
-# p page.port
-# p page.registry
-# p page.path
-# p page.opaque
-# p page.query
-# p page.fragment
-# p page.to_s.length
+# --------------------------------------
+# * URI情報を取得する
+# --------------------------------------
+# 対象のURIを解析する
+# ※URI::Generic のサブクラスのインスタンスを生成して返す
+#   scheme が指定されていない場合は、URI::Generic オブジェクトを返す
+html = URI.parse(target_uri)
 
-page = page.read({ "Cookie" => cookie_option })
+# 対象のURLを開き、Cookie情報を追加（追加のヘッダフィールドを指定する）
+# ※self.open(options={}).readと同じ
+#   htmlとして読み込ませる
+html = html.read({ "Cookie" => COOKIE_OPTION })
 
-charset = page.charset
-doc = Nokogiri::HTML(page, nil, charset)
+# 対象のURLの文字コードを取得する
+# ※文字コードは「Content-Type ヘッダの文字コード情報」から取得する
+html_char = html.charset
 
+# Nokogiriで対象の読み込ませたhtmlを解析する
+parsed_html = Nokogiri::HTML.parse(html, nil, html_char)
 
-# 取得したものをhtmlとして保存する
-# File.open("test.html","w:UTF-8") do |text|
-#  text.puts(doc)
-# end
+# --------------------------------------
+# * げっちゅ屋よりスクレイピングする
+# --------------------------------------
+parsed_html.css('table > tr').each do |target_tr| 
 
-# 日付を取得する文字列
-DAY_REGEXP = /id="[0-1][0-9]\/[0-3][0-9]"/
+  # bgcolorが"#ffffff"でなかったら次の要素へ
+  next unless target_tr[:bgcolor].to_s.include?("#ffffff")
 
-doc.css('table > tr').each do |link| 
+  target_tr.css("td").each do |td|
 
-  next unless link[:bgcolor].to_s.include?("#ffffff")
-
-  link.css("td").each do |td|
-    # 日付
+    # 日付 <tr align="center" rowspan="2" class="balack">の部分を取得
     if td[:align].to_s.include?("center") && td[:rowspan].to_s.include?("2") && td[:class].to_s.include?("black")
       puts td.content
     end
-    # ソフト名
+
+    # ソフト名 <tr align="left" rowspan="2">の部分を取得
     if td[:align].to_s.include?("left") && td[:rowspan].to_s.include?("2")
+      # class="black" を含まないタグであること
       unless td[:class].to_s.include?("black")
         puts td.content
       end
     end
-    # ソフト紹介ページ
+
+    # ソフト紹介ページ <tr align="left" rowspan="2">の部分を取得
     if td[:align].to_s.include?("left") && td[:rowspan].to_s.include?("2")
+      # class="black" を含まないタグであること
       unless td[:class].to_s.include?("black")
         td.css("a").each do |a|
           puts "http://www.getchu.com/all/" + a[:href]
         end
       end
     end
-    # メーカー名
+
+    # メーカー名 <tr align="left" rowspan="2" class="balack">の部分を取得
     if td[:align].to_s.include?("left") && td[:rowspan].to_s.include?("2") && td[:class].to_s.include?("black")
       puts td.content
     end
-    # 定価
+
+    # 定価 <tr align="right" rowspan="2" class="balack">の部分を取得
     if td[:align].to_s.include?("right") && td[:rowspan].to_s.include?("2") && td[:class].to_s.include?("black")
       puts td.content
     end
+
   end
 
 end
