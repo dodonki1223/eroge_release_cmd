@@ -79,6 +79,16 @@ parsed_html.css('table > tr').each do |target_tr|
       end
     end
 
+    # ID <tr align="left" rowspan="2">の部分を取得しそこから７桁の数値を取得する
+    if td[:align].to_s.include?("left") && td[:rowspan].to_s.include?("2")
+      # class="black" を含まないタグであること
+      unless td[:class].to_s.include?("black")
+        td.css("a").each do |a|
+          puts /[0-9]{7}/.match(a[:href])
+        end
+      end
+    end
+
     # メーカー名 <tr align="left" rowspan="2" class="balack">の部分を取得
     if td[:align].to_s.include?("left") && td[:rowspan].to_s.include?("2") && td[:class].to_s.include?("black")
       puts td.content
