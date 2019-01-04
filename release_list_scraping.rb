@@ -2,13 +2,15 @@ require './getchya_scraping.rb'
 require 'date'
 
 # げっちゅ屋の「月発売タイトル一覧・ゲーム」ページをスクレイピングし
-# 情報を取得するスクレイピングクラス
+# 発売リスト情報を取得するスクレイピングクラス
 class  ReleaseListScraping < GetchyaScraping
 
+  attr_accessor :year_month, :year, :month
+
   # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURL
-  RELEASE_LIST_URI = "http://www.getchu.com/all/price.html"
+  RELEASE_LIST_URI = ROOT_URI + "/all/price.html"
   # ゲームの紹介ページの共通URL
-  INTRODUCTION_PAGE_URI = "http://www.getchu.com/all/"
+  INTRODUCTION_PAGE_URI = ROOT_URI + "/all/"
   # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページの固定のURLパラメーター
   # ※さらに「年」、「月」のパラメータがある
   FIXED_URL_PARAMETER = [["genre", "pc_soft"], ["gall", "all"]]
@@ -26,15 +28,16 @@ class  ReleaseListScraping < GetchyaScraping
   #   インスタンス変数の初期化（年、月、年URLパラメーター、月URLパラメーター、発売リスト）
   def initialize(year_month)
     # 引数がなかった場合は現在日付の年月の文字列を取得する
-    @year_month = Date.today.strftime("%Y%m").to_s if year_month.nil?
+    year_month = Date.today.strftime("%Y%m").to_s if year_month.nil?
+    @year_month = year_month
 
     # 6桁でなかった場合は例外を発生させる
     # ※yyyymmの形式で引数来ることを想定しているため
     raise ArgumentError, "「%Y%m」で年月を指定して下さい" if year_month.length != 6
 
     # 年月の文字列から「年」、「月」を作成
-    @year = year_month[0, 4]
-    @month = year_month[4, 2]
+    @year = year_month.to_s[0, 4]
+    @month = year_month.to_s[4, 2]
 
     # 年月の文字列から「年」、「月」のURLパラメーターを作成
     @@url_param_year = ["year", @year]
@@ -45,12 +48,18 @@ class  ReleaseListScraping < GetchyaScraping
     raise ArgumentError, "月が不正です（01〜12で指定して下さい）"  unless @month.to_i.between?(1, 12)
   end
 
+  # スクレイピング対象のURLを取得する
+  #   URLパラメーターも不可した形で取得する
+  def target_uri
+    GetchyaScraping::create_uri(GETCHYA_URI, url_param)
+  end
+
   # スクレイピング
   #   げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURLからゲーム情報を取得する
   def scraping
     # スクレイピング対象のURLを作成し、そのURLをNokogiriで解析した結果を取得
-    target_uri = GetchyaScraping::create_uri(GETCHYA_URI, url_param)
-    parsed_html = GetchyaScraping::parsed_html_for_uri(target_uri)
+    uri = target_uri
+    parsed_html = GetchyaScraping::parsed_html_for_uri(uri)
 
     # 解析した結果からtrタグごと繰り返す
     parsed_html.css('table > tr').each do |tr| 
@@ -74,22 +83,30 @@ class  ReleaseListScraping < GetchyaScraping
         game[:price] = scraping_price(td) unless scraping_price(td).nil?
       end
 
+      # ゲームの紹介ページからスクレイピングし「パッケージ画像」、「ブランドページ」、「声優情報」を取得する
+      introductionPage = IntroductionPageScraping.new(game[:id])
+      merged_game = game.merge(introductionPage.scraping)
+
       # 取得したゲームの情報をゲームの発売リストに追加
-      @@release_list.push(game)
+      @@release_list.push(merged_game)
     end
+    return @@release_list
+  end
 
-    def game_list
-      @@release_list.each do |game| 
-        puts game[:id]
-        puts game[:title]
-        puts game[:release_date]
-        puts game[:brand_name]
-        puts game[:price]
-        puts game[:introduction_page]
-        puts " "
-      end
+  def game_list
+    @@release_list.each do |game| 
+      puts game[:id]
+      puts game[:title]
+      puts game[:release_date]
+      puts game[:brand_name]
+      puts game[:price]
+      puts game[:introduction_page]
+      puts game[:package_image]
+      puts game[:brand_page]
+      puts game[:voice_actor].join(",")
+      puts " "
     end
-
+    return ""
   end
 
   private

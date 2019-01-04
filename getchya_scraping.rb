@@ -6,6 +6,8 @@ require 'open-uri'
 class GetchyaScraping
   include Enumerable
 
+  # げっちゅ屋のルートURL
+  ROOT_URI = "http://www.getchu.com"
   # 「あなたは18歳以上ですか？」のページが表示されないようにするためのCookie設定
   COOKIE_OPTION = "getchu_adalt_flag=getchu.com"
 

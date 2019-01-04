@@ -1,5 +1,6 @@
 require './getchya_scraping.rb'
 require './release_list_scraping.rb'
+require './introduction_page_scraping.rb'
 require 'date'
 
 # --------------------------------------
@@ -92,19 +93,28 @@ parsed_html.css('table > tr').each do |tr|
 
 end
 
-# --------------------------------------
-# * 取得できたゲームの一覧を表示する
-# --------------------------------------
-game_list.each do |game| 
-  puts game[:id]
-  puts game[:title]
-  puts game[:release_date]
-  puts game[:brand_name]
-  puts game[:price]
-  puts game[:introduction_page]
-  puts " "
-end
+# # --------------------------------------
+# # * 取得できたゲームの一覧を表示する
+# # --------------------------------------
+# game_list.each do |game| 
+#   puts game[:id]
+#   puts game[:title]
+#   puts game[:release_date]
+#   puts game[:brand_name]
+#   puts game[:price]
+#   puts game[:introduction_page]
+#   puts " "
+# end
 
 test = ReleaseListScraping.new("201901")
 test.scraping
-test.game_list
+# test.game_list
+puts test.target_uri
+
+puts test.game_list
+
+# test2 = IntroductionPageScraping.new("1026277")
+# puts test2.id
+# puts test2.target_uri
+
+# test2.scraping
