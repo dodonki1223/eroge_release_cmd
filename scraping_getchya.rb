@@ -1,5 +1,6 @@
-require 'nokogiri'
-require 'open-uri'
+require './getchya_scraping.rb'
+require './release_list_scraping.rb'
+require 'date'
 
 # --------------------------------------
 # * 定数
@@ -20,31 +21,12 @@ COOKIE_OPTION = "getchu_adalt_flag=getchu.com"
 url_parameter_year = ["year", "2019"]
 url_parameter_month = ["month", "01"]
 
+# # 固定のURLパラメーターと変化するURLパラメーターから対象年月のURLパラメータを作成
+# url_parameter = URI.encode_www_form(FIXED_URL_PARAMETER.push(url_parameter_year, url_parameter_month))
+
 # 固定のURLパラメーターと変化するURLパラメーターから対象年月のURLパラメータを作成
-url_parameter = URI.encode_www_form(FIXED_URL_PARAMETER.push(url_parameter_year, url_parameter_month))
-
-# URLパラーメータを付加した形のものを作成
-target_uri = GETCHYA_URI + "?" + url_parameter
-
-# --------------------------------------
-# * URI情報を取得する
-# --------------------------------------
-# 対象のURIを解析する
-# ※URI::Generic のサブクラスのインスタンスを生成して返す
-#   scheme が指定されていない場合は、URI::Generic オブジェクトを返す
-html = URI.parse(target_uri)
-
-# 対象のURLを開き、Cookie情報を追加（追加のヘッダフィールドを指定する）
-# ※self.open(options={}).readと同じ
-#   htmlとして読み込ませる
-html = html.read({ "Cookie" => COOKIE_OPTION })
-
-# 対象のURLの文字コードを取得する
-# ※文字コードは「Content-Type ヘッダの文字コード情報」から取得する
-html_char = html.charset
-
-# Nokogiriで対象の読み込ませたhtmlを解析する
-parsed_html = Nokogiri::HTML.parse(html, nil, html_char)
+target_uri = GetchyaScraping::create_uri(GETCHYA_URI, FIXED_URL_PARAMETER.push(url_parameter_year, url_parameter_month))
+parsed_html = GetchyaScraping::parsed_html_for_uri(target_uri)
 
 # XXXX年XX月のゲームの発売リストを保持する変数を作成
 game_list = []
@@ -52,17 +34,17 @@ game_list = []
 # --------------------------------------
 # * げっちゅ屋よりスクレイピングする
 # --------------------------------------
-parsed_html.css('table > tr').each do |target_tr| 
+parsed_html.css('table > tr').each do |tr| 
 
   # bgcolorが"#ffffff"でなかったら次の要素へ
-  next unless target_tr[:bgcolor].to_s.include?("#ffffff")
+  next unless tr[:bgcolor].to_s.include?("#ffffff")
   # tdタグ内の要素が４以外の時は次の要素へ
   # ※4の時は特典別に定価が別れている時なのでその時は無視する
-  next unless target_tr.css("td").to_a.length != 4
+  next unless tr.css("td").to_a.length != 4
 
   # ゲーム情報を保持するHashをすべて空文字で初期化する
   game = { :id => "", :title => "",  :package_image => "", :release_date => "", :brand_name => "", :brand_page => "", :voice_actor => "", :price => "", :introduction_page => "" }
-  target_tr.css("td").each do |td|
+  tr.css("td").each do |td|
 
     # 日付 <tr align="center" class="balack">の部分を取得
     if td[:align].to_s.include?("center") && td[:class].to_s.include?("black")
@@ -122,3 +104,7 @@ game_list.each do |game|
   puts game[:introduction_page]
   puts " "
 end
+
+test = ReleaseListScraping.new("201901")
+test.scraping
+test.game_list
