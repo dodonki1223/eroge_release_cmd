@@ -26,7 +26,7 @@ class  ReleaseListScraping < GetchyaScraping
   #   年月の文字列を引数で受け取り、不正だった場合は例外を発生させる
   #   引数がなかった時は年、月には現在日付のものをセットする
   #   インスタンス変数の初期化（年、月、年URLパラメーター、月URLパラメーター、発売リスト）
-  def initialize(year_month)
+  def initialize(year_month = nil)
     # 引数がなかった場合は現在日付の年月の文字列を取得する
     year_month = Date.today.strftime("%Y%m").to_s if year_month.nil?
     @year_month = year_month
