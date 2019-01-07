@@ -4,7 +4,6 @@ require 'open-uri'
 # げっちゅ屋スクレイピングクラス
 # げっちゅ屋のスクレイピングで使用するクラスです
 class GetchyaScraping
-  include Enumerable
 
   # げっちゅ屋のルートURL
   ROOT_URI = "http://www.getchu.com"
