@@ -1,5 +1,6 @@
 require './release_list_scraping.rb'
 require './introduction_page_scraping.rb'
+require './getchya_scraping.rb'
 
 # ゲーム情報を格納する配列
 game_list = []
