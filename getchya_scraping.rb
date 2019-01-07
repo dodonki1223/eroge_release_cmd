@@ -3,8 +3,9 @@ require 'open-uri'
 
 # げっちゅ屋スクレイピングクラス
 # げっちゅ屋のスクレイピングで使用するクラスです
+# ※create_uri、parsed_html_for_uriだけなのでmoduleでもいいような気がするが、今後
+#   のことも考えとりあえずclassとする
 class GetchyaScraping
-  include Enumerable
 
   # げっちゅ屋のルートURL
   ROOT_URI = "http://www.getchu.com"
@@ -15,7 +16,7 @@ class GetchyaScraping
   #   URIとURLパラメーターを使用してURIを作成する
   #   URLパラメーターが存在しない時はそのままURIを返し、URLパラメーターが存在する
   #   時はURIにURLパラメーターを付加した形で返す
-  def self.create_uri(uri, url_param = nil)
+  def create_uri(uri, url_param = nil)
     return uri if url_param.nil?
     converting_url_param = URI.encode_www_form(url_param)
     uri + "?" + converting_url_param
@@ -23,7 +24,7 @@ class GetchyaScraping
 
   # URIからNokogiriで解析後のhtmlを取得
   #   URIからhtmlを取得し、Nokogiriで読み込ませたhtmlを解析したものを取得する
-  def self.parsed_html_for_uri(uri)
+  def parsed_html_for_uri(uri)
     # 対象のURIを解析する
     # ※URI::Generic のサブクラスのインスタンスを生成して返す
     #   scheme が指定されていない場合は、URI::Generic オブジェクトを返す
