@@ -12,6 +12,9 @@ class  IntroductionPageScraping < GetchyaScraping
   # URLパラメーターのID
   @@url_parameter_id = []
 
+  # スクレイピンしたゲーム情報を格納するHash
+  @@game_info = { :package_image => "", :brand_page => "", :voice_actor => "" }
+
   # コンストラクタ
   #   IDを引数で受け取り、もしIDが存在しなかった場合は引数エラーの例外を発生させる
   #   ※必ずIDを指定してすることを強制させるためである
@@ -38,11 +41,10 @@ class  IntroductionPageScraping < GetchyaScraping
     parsed_html = GetchyaScraping::parsed_html_for_uri(uri)
 
     # 紹介ページからゲーム情報をスクレイピングする
-    game = { :package_image => "", :brand_page => "", :voice_actor => "" }
-    game[:package_image] = scraping_package_image(parsed_html)
-    game[:brand_page] = scraping_brand_page(parsed_html)
-    game[:voice_actor] = scraping_voice_actors(parsed_html)
-    return game
+    @@game_info[:package_image] = scraping_package_image(parsed_html)
+    @@game_info[:brand_page] = scraping_brand_page(parsed_html)
+    @@game_info[:voice_actor] = scraping_voice_actors(parsed_html)
+    return @@game_info
   end
 
   private

@@ -51,7 +51,7 @@ class  ReleaseListScraping < GetchyaScraping
   # スクレイピング対象のURLを取得する
   #   URLパラメーターも不可した形で取得する
   def target_uri
-    GetchyaScraping::create_uri(GETCHYA_URI, url_param)
+    GetchyaScraping::create_uri(RELEASE_LIST_URI, url_param)
   end
 
   # スクレイピング
@@ -71,7 +71,7 @@ class  ReleaseListScraping < GetchyaScraping
       next unless tr.css("td").to_a.length != 4
 
       # ゲーム情報を格納するHashを初期化する
-      game = { :id => "", :title => "",  :package_image => "", :release_date => "", :brand_name => "", :brand_page => "", :voice_actor => "", :price => "", :introduction_page => "" }
+      game = { :id => "", :title => "", :release_date => "", :brand_name => "", :price => "", :introduction_page => "" }
 
       # trタグ内のtdタグごと繰り返す
       tr.css("td").each do |td|
@@ -83,30 +83,10 @@ class  ReleaseListScraping < GetchyaScraping
         game[:price] = scraping_price(td) unless scraping_price(td).nil?
       end
 
-      # ゲームの紹介ページからスクレイピングし「パッケージ画像」、「ブランドページ」、「声優情報」を取得する
-      introductionPage = IntroductionPageScraping.new(game[:id])
-      merged_game = game.merge(introductionPage.scraping)
-
       # 取得したゲームの情報をゲームの発売リストに追加
-      @@release_list.push(merged_game)
+      @@release_list.push(game)
     end
     return @@release_list
-  end
-
-  def game_list
-    @@release_list.each do |game| 
-      puts game[:id]
-      puts game[:title]
-      puts game[:release_date]
-      puts game[:brand_name]
-      puts game[:price]
-      puts game[:introduction_page]
-      puts game[:package_image]
-      puts game[:brand_page]
-      puts game[:voice_actor].join(",")
-      puts " "
-    end
-    return ""
   end
 
   private
