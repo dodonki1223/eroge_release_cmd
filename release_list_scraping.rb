@@ -51,7 +51,6 @@ class  ReleaseListScraping < GetchyaScraping
   # スクレイピング対象のURLを取得する
   #   URLパラメーターも付加した形で取得する
   def target_uri
-    # GetchyaScraping::create_uri(RELEASE_LIST_URI, url_param)
     create_uri(RELEASE_LIST_URI, url_param)
   end
 
@@ -60,7 +59,6 @@ class  ReleaseListScraping < GetchyaScraping
   def scraping
     # スクレイピング対象のURLを作成し、そのURLをNokogiriで解析した結果を取得
     uri = target_uri
-    # parsed_html = GetchyaScraping::parsed_html_for_uri(uri)
     parsed_html = parsed_html_for_uri(uri)
 
     # 解析した結果からtrタグごと繰り返す

@@ -30,7 +30,6 @@ class  IntroductionPageScraping < GetchyaScraping
   # スクレイピング対象のURLを取得する
   #   URLパラメーターも付加した形で取得する
   def target_uri
-    # GetchyaScraping::create_uri(INTRODUCTION_PAGE_URI, url_param)
     create_uri(INTRODUCTION_PAGE_URI, url_param)
   end
 
@@ -39,7 +38,6 @@ class  IntroductionPageScraping < GetchyaScraping
   def scraping
     # スクレイピング対象のURLを作成し、そのURLをNokogiriで解析した結果を取得
     uri = target_uri
-    # parsed_html = GetchyaScraping::parsed_html_for_uri(uri)
     parsed_html = parsed_html_for_uri(uri)
 
     # 紹介ページからゲーム情報をスクレイピングする
