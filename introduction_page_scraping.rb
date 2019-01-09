@@ -4,7 +4,7 @@ require './getchya_scraping.rb'
 # ゲーム情報を取得するスクレイピングクラス
 class  IntroductionPageScraping < GetchyaScraping
 
-  attr_accessor :id
+  attr_accessor :id, :uri
 
   # げっちゅ屋の「ゲーム紹介」ページURL
   INTRODUCTION_PAGE_URI = ROOT_URI + "/soft.phtml"
@@ -22,16 +22,10 @@ class  IntroductionPageScraping < GetchyaScraping
     # IDがnilの場合は引数エラーの例外を発生させる
     raise ArgumentError, "IDは必ず指定して下さい" if id.nil?
 
-    # インスタンス変数とクラス変数に「id」をセットする
+    # インスタンス変数とクラス変数に「id」をセットする、スクレイピングする対象のURLをセット
     @id = id
     @@url_parameter_id = ["id", id]
-  end
-
-  # スクレイピング対象のURLを取得する
-  #   URLパラメーターも付加した形で取得する
-  def target_uri
-    # GetchyaScraping::create_uri(INTRODUCTION_PAGE_URI, url_param)
-    create_uri(INTRODUCTION_PAGE_URI, url_param)
+    @uri = target_uri
   end
 
   # スクレイピング
@@ -39,8 +33,7 @@ class  IntroductionPageScraping < GetchyaScraping
   def scraping
     # スクレイピング対象のURLを作成し、そのURLをNokogiriで解析した結果を取得
     uri = target_uri
-    # parsed_html = GetchyaScraping::parsed_html_for_uri(uri)
-    parsed_html = parsed_html_for_uri(uri)
+    parsed_html = GetchyaScraping::parsed_html_for_uri(uri)
 
     # 紹介ページからゲーム情報をスクレイピングする
     @@game_info[:package_image] = scraping_package_image(parsed_html)
@@ -50,6 +43,12 @@ class  IntroductionPageScraping < GetchyaScraping
   end
 
   private
+
+    # スクレイピング対象のURLを取得する
+    #   URLパラメーターも付加した形で取得する
+    def target_uri
+      GetchyaScraping::create_uri(INTRODUCTION_PAGE_URI, url_param)
+    end
 
     # URLパラメーター
     #   IDのURLパラメーターを返す

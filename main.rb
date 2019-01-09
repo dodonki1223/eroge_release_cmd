@@ -12,7 +12,7 @@ release_list = release_list_scraping.scraping
 release_list.each do |game| 
   # ゲームの紹介ページからスクレイピングし「パッケージ画像」、「ブランドページ」、「声優情報」を取得する
   introductionPage = IntroductionPageScraping.new(game[:id])
-  # 「月発売タイトル一覧・ゲーム」と「パッケージ画像」、「ブランドページ」、「声優情報」をマージする
+  「月発売タイトル一覧・ゲーム」と「パッケージ画像」、「ブランドページ」、「声優情報」をマージする
   merged_game = game.merge(introductionPage.scraping)
   game_list.push(merged_game)
 end
