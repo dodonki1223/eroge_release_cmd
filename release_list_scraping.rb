@@ -5,7 +5,7 @@ require 'date'
 # 発売リスト情報を取得するスクレイピングクラス
 class  ReleaseListScraping < GetchyaScraping
 
-  attr_accessor :year_month, :year, :month
+  attr_accessor :year_month, :year, :month, :uri
 
   # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURL
   RELEASE_LIST_URI = ROOT_URI + "/all/price.html"
@@ -46,12 +46,9 @@ class  ReleaseListScraping < GetchyaScraping
     # 年、月の値が不正だった場合は例外を発生させる
     raise ArgumentError, "年が不正です（2012年より指定して下さい）" unless @year.to_i.between?(2012, 2999)
     raise ArgumentError, "月が不正です（01〜12で指定して下さい）"  unless @month.to_i.between?(1, 12)
-  end
 
-  # スクレイピング対象のURLを取得する
-  #   URLパラメーターも付加した形で取得する
-  def target_uri
-    GetchyaScraping::create_uri(RELEASE_LIST_URI, url_param)
+    # スクレイピングする対象のURLをセット
+    @uri = target_uri
   end
 
   # スクレイピング
@@ -90,6 +87,12 @@ class  ReleaseListScraping < GetchyaScraping
   end
 
   private
+
+    # スクレイピング対象のURLを取得する
+    #   URLパラメーターも付加した形で取得する
+    def target_uri
+      GetchyaScraping::create_uri(RELEASE_LIST_URI, url_param)
+    end
 
     # URLパラメーター
     #   固定のURLパラメーターと変化するURLパラメーターを結合してスクレイピング対象の
