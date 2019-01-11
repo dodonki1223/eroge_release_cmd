@@ -1,0 +1,12 @@
+# OS側で作成されるファイルの除外
+*.DS_Store
+
+# Vimの編集時に作成されるファイルの除外
+*.swp
+
+# rbenvで作成されるファイルの除外
+.ruby-version
+
+# Bundlerで作成されるファイルの除外
+/.bundle
+/vendor/bundle
