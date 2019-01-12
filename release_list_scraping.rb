@@ -9,9 +9,9 @@ class ReleaseListScraping < GetchyaScraping
   attr_accessor :year_month, :year, :month, :uri
 
   # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURL
-  RELEASE_LIST_URI = (ROOT_URI + '/all/price.html').freeze
+  RELEASE_LIST_URI = ROOT_URI + '/all/price.html'
   # ゲームの紹介ページの共通URL
-  INTRODUCTION_PAGE_URI = (ROOT_URI + '/all/').freeze
+  INTRODUCTION_PAGE_URI = ROOT_URI + '/all/'
 
   # コンストラクタ
   #   年月の文字列を引数で受け取り、不正だった場合は例外を発生させる

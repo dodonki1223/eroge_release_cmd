@@ -8,7 +8,7 @@ class IntroductionPageScraping < GetchyaScraping
   attr_accessor :id, :uri
 
   # げっちゅ屋の「ゲーム紹介」ページURL
-  INTRODUCTION_PAGE_URI = (ROOT_URI + '/soft.phtml').freeze
+  INTRODUCTION_PAGE_URI = ROOT_URI + '/soft.phtml'
 
   # コンストラクタ
   #   IDを引数で受け取り、もしIDが存在しなかった場合は引数エラーの例外を発生させる
