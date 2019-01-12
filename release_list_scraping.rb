@@ -9,19 +9,9 @@ class ReleaseListScraping < GetchyaScraping
   attr_accessor :year_month, :year, :month, :uri
 
   # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURL
-  RELEASE_LIST_URI = ROOT_URI + '/all/price.html'
+  RELEASE_LIST_URI = (ROOT_URI + '/all/price.html').freeze
   # ゲームの紹介ページの共通URL
-  INTRODUCTION_PAGE_URI = ROOT_URI + '/all/'
-  # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページの固定のURLパラメーター
-  # ※さらに「年」、「月」のパラメータがある
-  FIXED_URL_PARAMETER = [['genre', 'pc_soft'], ['gall', 'all']]
-
-  # XXXX年XX月のゲームの発売リストを保持する変数を作成
-  @@release_list = []
-
-  # 変動するURLパラメーター
-  @@url_param_year = []
-  @@url_param_month = []
+  INTRODUCTION_PAGE_URI = (ROOT_URI + '/all/').freeze
 
   # コンストラクタ
   #   年月の文字列を引数で受け取り、不正だった場合は例外を発生させる
@@ -29,7 +19,7 @@ class ReleaseListScraping < GetchyaScraping
   #   インスタンス変数の初期化（年、月、年URLパラメーター、月URLパラメーター、発売リスト）
   def initialize(year_month = nil)
     # 引数がなかった場合は現在日付の年月の文字列を取得する
-    year_month = Date.today.strftime('%Y%m').to_s if year_month.nil?
+    year_month  = Date.today.strftime('%Y%m').to_s if year_month.nil?
     @year_month = year_month
 
     # 6桁でなかった場合は例外を発生させる
@@ -37,19 +27,18 @@ class ReleaseListScraping < GetchyaScraping
     raise ArgumentError, '「%Y%m」で年月を指定して下さい' if year_month.length != 6
 
     # 年月の文字列から「年」、「月」を作成
-    @year = year_month.to_s[0, 4]
+    @year  = year_month.to_s[0, 4]
     @month = year_month.to_s[4, 2]
-
-    # 年月の文字列から「年」、「月」のURLパラメーターを作成
-    @@url_param_year = ['year', @year]
-    @@url_param_month = ['month', @month]
 
     # 年、月の値が不正だった場合は例外を発生させる
     raise ArgumentError, '年が不正です（2012年より指定して下さい）' unless @year.to_i.between?(2012, 2999)
     raise ArgumentError, '月が不正です（01〜12で指定して下さい）'  unless @month.to_i.between?(1, 12)
 
-    # スクレイピングする対象のURLをセット
-    @uri = target_uri
+    @url_param_year      = ['year', @year]                   # 年月の文字列から「年」のURLパラメーターを作成
+    @url_param_month     = ['month', @month]                 # 年月の文字列から「月」のURLパラメーターを作成
+    @release_list        = []                                # XXXX年XX月のゲームの発売リストを保持する変数に初期値をセット
+    @fixed_url_parameter = [%w[genre pc_soft], %w[gall all]] # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページの固定のURLパラメーター
+    @uri                 = target_uri                        # スクレイピングする対象のURLをセット
   end
 
   # スクレイピング
@@ -81,9 +70,9 @@ class ReleaseListScraping < GetchyaScraping
       end
 
       # 取得したゲームの情報をゲームの発売リストに追加
-      @@release_list.push(game)
+      @release_list.push(game)
     end
-    @@release_list
+    @release_list
   end
 
   private
@@ -98,7 +87,7 @@ class ReleaseListScraping < GetchyaScraping
   #   固定のURLパラメーターと変化するURLパラメーターを結合してスクレイピング対象の
   #   発売リストページのURLパラメーターを作成する
   def url_param
-    FIXED_URL_PARAMETER.push(@@url_param_year, @@url_param_month)
+    @fixed_url_parameter.push(@url_param_year, @url_param_month)
   end
 
   # 発売日をスクレイピングする

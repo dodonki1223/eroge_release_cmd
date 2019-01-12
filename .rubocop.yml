@@ -35,3 +35,8 @@ Metrics/PerceivedComplexity:
 # ※循環的複雑度の計算方法は「https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/cop/metrics/cyclomatic_complexity.rb」
 Metrics/CyclomaticComplexity:
   Max: 15
+
+# メソッドのABC sizeチェックの合計ポイントを１５→４０に変更
+# ABC sizeチェックの計算方法は「https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/cop/metrics/abc_size.rb」
+Metrics/AbcSize:
+  Max: 40

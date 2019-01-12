@@ -8,13 +8,7 @@ class IntroductionPageScraping < GetchyaScraping
   attr_accessor :id, :uri
 
   # げっちゅ屋の「ゲーム紹介」ページURL
-  INTRODUCTION_PAGE_URI = ROOT_URI + '/soft.phtml'
-
-  # URLパラメーターのID
-  @@url_parameter_id = []
-
-  # スクレイピンしたゲーム情報を格納するHash
-  @@game_info = { package_image: '', brand_page: '', voice_actor: '' }
+  INTRODUCTION_PAGE_URI = (ROOT_URI + '/soft.phtml').freeze
 
   # コンストラクタ
   #   IDを引数で受け取り、もしIDが存在しなかった場合は引数エラーの例外を発生させる
@@ -23,10 +17,10 @@ class IntroductionPageScraping < GetchyaScraping
     # IDがnilの場合は引数エラーの例外を発生させる
     raise ArgumentError, 'IDは必ず指定して下さい' if id.nil?
 
-    # インスタンス変数とクラス変数に「id」をセットする、スクレイピングする対象のURLをセット
-    @id = id
-    @@url_parameter_id = ['id', id]
-    @uri = target_uri
+    @id = id                                                            # スクレイピングするゲームのID（げっちゅ屋が管理しているID）
+    @url_parameter_id = ['id', id]                                      # URLパラメータのID
+    @game_info = { package_image: '', brand_page: '', voice_actor: '' } # スクレイピングしたゲーム情報を格納するHash
+    @uri = target_uri                                                   # スクレイピング対象のURL
   end
 
   # スクレイピング
@@ -37,10 +31,10 @@ class IntroductionPageScraping < GetchyaScraping
     parsed_html = GetchyaScraping.parsed_html_for_uri(uri)
 
     # 紹介ページからゲーム情報をスクレイピングする
-    @@game_info[:package_image] = scraping_package_image(parsed_html)
-    @@game_info[:brand_page] = scraping_brand_page(parsed_html)
-    @@game_info[:voice_actor] = scraping_voice_actors(parsed_html)
-    @@game_info
+    @game_info[:package_image] = scraping_package_image(parsed_html)
+    @game_info[:brand_page] = scraping_brand_page(parsed_html)
+    @game_info[:voice_actor] = scraping_voice_actors(parsed_html)
+    @game_info
   end
 
   private
@@ -54,7 +48,7 @@ class IntroductionPageScraping < GetchyaScraping
   # URLパラメーター
   #   IDのURLパラメーターを返す
   def url_param
-    [@@url_parameter_id]
+    [@url_parameter_id]
   end
 
   # パッケージ画像をスクレイピングする
