@@ -7,8 +7,8 @@ require './games.rb'
 
 games = Games.new
 puts games.games
-puts games.to_json
-puts JSON.parse(games.to_json)
+# puts games.to_json
+# puts JSON.parse(games.to_json)
 
 # # ゲーム情報を格納する配列
 # game_list = []

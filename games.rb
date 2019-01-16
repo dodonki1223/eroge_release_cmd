@@ -9,16 +9,28 @@ require 'json'
 # 発売リストページ、ゲーム紹介ページからスクレイピングした結果を保持
 # する。その情報を加工・検索してデータを取得することができる
 class Games
-  attr_accessor :games, :year_month, :year, :month, :cache_file
+  attr_accessor :games, :year_month, :year, :month, :cache_file, :release_list
 
   # コンストラクタ
-  #   年月の文字列を引数で受け取り、対象の年月のゲーム情報を取得しセットする
-  #   対象の年月情報を合わせてセットする
-  def initialize(year_month = nil)
+  #   クラス内で使用するインスタンス変数をセットする
+  #   キャッシュファイルパスを作成し、キャッシュファイルを削除する時はすでに作
+  #   成されているキャッシュファイルを削除する
+  def initialize(cleared_cache = false, year_month = nil)
+    # 発売リスト、年、月情報を取得する
+    @release_list = ReleaseListScraping.new(year_month)
+    @year = release_list.year
+    @month = release_list.month
+
+    # キャッシュファイルのパス名を作成
+    # キャッシュクリアの時はキャッシュをクリアする
+    @cache_file = "./cache/#{@year}#{@month}.json"
+    clear_cache(@cache_file) if cleared_cache
+
     # ゲーム情報をセットする（げっちゅ屋よりスクレイピングして取得する）
-    @games = get_games(year_month)
+    @games = get_games(cache_file)
+
     # 年月情報をセットする
-    @year_month = format('%<year>d年%<month>s月', year: @year, month: @month)
+    @year_month = "#{@year}年#{@month}月"
   end
 
   # ゲーム情報をjson形式に変換して返す
@@ -33,18 +45,12 @@ class Games
   #   キャッシュファイルが存在する時はキャッシュファイルから読み込んで取得する
   #   キャッシュファイルが存在しない時はゲーム情報をげっちゅ屋からスクレイピン
   #   グして取得する。インスタンス変数のgames、year、monthに値をセットする
-  def get_games(year_month)
-    # 発売リストクラスから年、月情報を取得する
-    release_list_scraping = ReleaseListScraping.new(year_month)
-    @year = release_list_scraping.year
-    @month = release_list_scraping.month
-
+  def get_games(cache_file)
     # キャッシュファイルが存在する時はスクレイピングを行わずキャッシュファイルから読み込む
-    @cache_file = format('./cache/%<year>d%<month>s.json', year: @year, month: @month)
-    return read_cache(@cache_file) if cached?(@cache_file)
+    return read_cache(cache_file) if cached?(cache_file)
 
     # げっちゅ屋の「月発売タイトル一覧・ゲーム」の一覧をスクレイピングして取得する
-    release_list = release_list_scraping.scraping
+    release_list = @release_list.scraping
 
     # ゲーム情報を追加していく
     games = []
@@ -57,20 +63,25 @@ class Games
     end
 
     # キャッシュファイルを作成する
-    create_cache(@year, @month, games)
+    create_cache(@cache_file, games)
 
     games
+  end
+
+  # キャッシュファイルが存在するか？
+  def cached?(cache_file)
+    File.exist?(cache_file)
   end
 
   # キャッシュファイルを作成する
   #   cacheフォルダ内に年月のjsonファイルを作成する
   #   すでに同名のファイルが存在した場合は中身が破棄され、今回の書き込み内容に
   #   上書きされる
-  def create_cache(games)
+  def create_cache(cache_file, games)
     # キャッシュフォルダへキャッシュファイル（jsonファイル）を書き込む
     # ファイル名は「YYYYMM.json」の形式とする
     # ※ブロックを指定して呼び出した場合はブロックの実行が終了すると、ファイルは自動的にクローズされる
-    File.open(@cache_file, 'w') { |file| file.puts JSON.pretty_generate(games) }
+    File.open(cache_file, 'w') { |file| file.puts JSON.pretty_generate(games) }
   end
 
   # キャッシュファイルを読み込む
@@ -81,8 +92,14 @@ class Games
     end
   end
 
-  # キャッシュファイルが存在するか？
-  def cached?(cache_file)
-    File.exist?(cache_file)
+  # キャッシュファイルをクリアする
+  #   キャッシュファイルを削除する。削除対象のキャッシュファイルが
+  #   存在しない場合はエラーメッセージをコンソールに表示する
+  def clear_cache(cache_file)
+    File.delete(cache_file)
+  rescue StandardError => e
+    puts '<キャッシュファイルの削除に失敗しました>'
+    puts e.message
+    puts e.backtrace
   end
 end
