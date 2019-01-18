@@ -7,6 +7,9 @@ require './games.rb'
 
 games = Games.new
 puts games.games
+p __dir__
+puts games.cache_file
+games.create_csv
 # puts games.to_json
 # puts JSON.parse(games.to_json)
 

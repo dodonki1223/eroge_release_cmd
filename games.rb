@@ -4,12 +4,18 @@ require './release_list_scraping.rb'
 require './introduction_page_scraping.rb'
 require './getchya_scraping.rb'
 require 'json'
+require 'csv'
 
 # げっちゅ屋のゲーム情報を管理するクラス
 # 発売リストページ、ゲーム紹介ページからスクレイピングした結果を保持
 # する。その情報を加工・検索してデータを取得することができる
 class Games
   attr_accessor :games, :year_month, :year, :month, :cache_file, :release_list
+
+  # 作成ファイルが格納されるディレクトリ
+  CREATED_PATH = "#{__dir__}/created/"
+  # キャッシュファイルが格納されるディレクトリ
+  CACHE_PATH = "#{__dir__}/cache/"
 
   # コンストラクタ
   #   クラス内で使用するインスタンス変数をセットする
@@ -18,16 +24,20 @@ class Games
   def initialize(cleared_cache = false, year_month = nil)
     # 発売リスト、年、月情報を取得する
     @release_list = ReleaseListScraping.new(year_month)
-    @year = release_list.year
-    @month = release_list.month
+    @year         = release_list.year
+    @month        = release_list.month
 
     # キャッシュファイルのパス名を作成
     # キャッシュクリアの時はキャッシュをクリアする
-    @cache_file = "./cache/#{@year}#{@month}.json"
+    @cache_file = get_file_path(CACHE_PATH, "#{@year}#{@month}.json")
     clear_cache(@cache_file) if cleared_cache
 
     # ゲーム情報をセットする（げっちゅ屋よりスクレイピングして取得する）
     @games = get_games(cache_file)
+
+    # キャッシュフォルダへキャッシュファイル（jsonファイル）を作成する
+    # ※ファイル名は「YYYYMM.json」の形式とする
+    create_json(@cache_file)
 
     # 年月情報をセットする
     @year_month = "#{@year}年#{@month}月"
@@ -37,6 +47,20 @@ class Games
   #   ゲーム情報をげっちゅ屋からスクレイピングしその結果をjson形式に変換して返す
   def to_json
     JSON.pretty_generate(@games)
+  end
+
+  # jsonファイルを作成する
+  #   対象のパスにjsonファイルを作成する
+  def create_json(path)
+    create_file(path, to_json)
+  end
+
+  def create_csv
+    csv_file = get_file_path(CREATED_PATH, "#{@year}#{@month}.csv")
+    CSV.open(csv_file, 'wb') do |csv|
+      csv << ["row", "of", "CSV", "data"]
+      csv << ["another", "row"]
+    end
   end
 
   private
@@ -61,27 +85,34 @@ class Games
       game_info = game.merge(introduction_page.scraping)
       games.push(game_info)
     end
-
-    # キャッシュファイルを作成する
-    create_cache(@cache_file, games)
-
     games
+  end
+
+  # ファイルのパス（フルパス）を取得する
+  #   ファイルのパスは「作成ファイルパス」、「キャッシュファイルパス」のみなの
+  #   でそれ以外を指定した時は例外を投げる
+  def get_file_path(directory, file_name)
+    unless [CREATED_PATH, CACHE_PATH].include?(directory)
+      raise ArgumentError, 'CREATED_PATH、CACHE_PATHのどちらかを必ず指定して下さい'
+    end
+
+    directory + file_name
+  end
+
+  # ファイルを作成する
+  #   対象のパスへcontentの内容を書き込む(文字列)。対象のパスに同名のファイ
+  #   ルが存在した場合は中身が破棄され、今回の書き込み内容に上書きされる。
+  #   大量の文字列を指定するとメモリ不足で落ちる可能性があると思われるので注
+  #   意すること
+  def create_file(path, content)
+    # 対象のパス（フルパスが来る想定）へcontent情報を書き込む
+    # ※ブロックを指定して呼び出した場合はブロックの実行が終了すると、ファイルは自動的にクローズされる
+    File.open(path, 'w') { |file| file.puts content }
   end
 
   # キャッシュファイルが存在するか？
   def cached?(cache_file)
     File.exist?(cache_file)
-  end
-
-  # キャッシュファイルを作成する
-  #   cacheフォルダ内に年月のjsonファイルを作成する
-  #   すでに同名のファイルが存在した場合は中身が破棄され、今回の書き込み内容に
-  #   上書きされる
-  def create_cache(cache_file, games)
-    # キャッシュフォルダへキャッシュファイル（jsonファイル）を書き込む
-    # ファイル名は「YYYYMM.json」の形式とする
-    # ※ブロックを指定して呼び出した場合はブロックの実行が終了すると、ファイルは自動的にクローズされる
-    File.open(cache_file, 'w') { |file| file.puts JSON.pretty_generate(games) }
   end
 
   # キャッシュファイルを読み込む
