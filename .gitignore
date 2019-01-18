@@ -10,3 +10,6 @@
 # Bundlerで作成されるファイルの除外
 /.bundle
 /vendor/bundle
+
+# キャッシュフォルダ内のファイルの除外
+/cache

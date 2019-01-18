@@ -118,7 +118,7 @@ class ReleaseListScraping < GetchyaScraping
   #   ID <tr align="left">の部分を取得しそこから６桁以上の数値を取得し返す
   #   IDは6、7桁のようだ
   def scraping_id(td)
-    return nil if td[:align].to_s.include?('left')
+    return nil unless td[:align].to_s.include?('left')
 
     # class="black" を含まないタグであり、<a>タグが存在した時
     if td[:class].to_s.include?('black') == false && td.css('a').empty? == false
