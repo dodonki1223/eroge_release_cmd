@@ -17,23 +17,23 @@ class IntroductionPageScraping < GetchyaScraping
     # IDがnilの場合は引数エラーの例外を発生させる
     raise ArgumentError, 'IDは必ず指定して下さい' if id.nil?
 
-    @id = id                                                            # スクレイピングするゲームのID（げっちゅ屋が管理しているID）
-    @url_parameter_id = ['id', id]                                      # URLパラメータのID
-    @game_info = { package_image: '', brand_page: '', voice_actor: '' } # スクレイピングしたゲーム情報を格納するHash
-    @uri = target_uri                                                   # スクレイピング対象のURL
+    @id               = id                                                                 # スクレイピングするゲームのID（げっちゅ屋が管理しているID）
+    @url_parameter_id = ['id', id]                                                         # URLパラメータのID
+    @game_info        = { 'package_image' => '', 'brand_page' => '', 'voice_actor' => '' } # スクレイピングしたゲーム情報を格納するHash
+    @uri              = target_uri                                                         # スクレイピング対象のURL
   end
 
   # スクレイピング
   #   げっちゅ屋の「ゲーム紹介ページ」からゲーム情報を取得する
   def scraping
     # スクレイピング対象のURLを作成し、そのURLをNokogiriで解析した結果を取得
-    uri = target_uri
+    uri         = target_uri
     parsed_html = GetchyaScraping.parsed_html_for_uri(uri)
 
     # 紹介ページからゲーム情報をスクレイピングする
-    @game_info[:package_image] = scraping_package_image(parsed_html)
-    @game_info[:brand_page] = scraping_brand_page(parsed_html)
-    @game_info[:voice_actor] = scraping_voice_actors(parsed_html)
+    @game_info['package_image'] = scraping_package_image(parsed_html)
+    @game_info['brand_page']    = scraping_brand_page(parsed_html)
+    @game_info['voice_actor']   = scraping_voice_actors(parsed_html)
     @game_info
   end
 
