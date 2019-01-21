@@ -5,10 +5,13 @@ require './introduction_page_scraping.rb'
 require './getchya_scraping.rb'
 require './games.rb'
 
-games = Games.new
-puts games.games
-# puts games.to_json
-# puts JSON.parse(games.to_json)
+games = Games.new(false, '201902')
+games.where = {
+  'voice_actor' => 'ゆい'
+}
+puts games.to_json
+games.create_csv
+games.create_json
 
 # # ゲーム情報を格納する配列
 # game_list = []

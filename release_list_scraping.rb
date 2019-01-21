@@ -57,16 +57,16 @@ class ReleaseListScraping < GetchyaScraping
       next unless tr.css('td').to_a.length != 4
 
       # ゲーム情報を格納するHashを初期化する
-      game = { id: '', title: '', release_date: '', brand_name: '', price: '', introduction_page: '' }
+      game = { 'id' => '', 'title' => '', 'release_date' => '', 'brand_name' => '', 'price' => '', 'introduction_page' => '' }
 
       # trタグ内のtdタグごと繰り返す
       tr.css('td').each do |td|
-        game[:release_date]      = scraping_date(td) unless scraping_date(td).nil?
-        game[:title]             = scraping_title(td) unless scraping_title(td).nil?
-        game[:introduction_page] = scraping_introduction_page(td) unless scraping_introduction_page(td).nil?
-        game[:id]                = scraping_id(td) unless scraping_id(td).nil?
-        game[:brand_name]        = scraping_brand_name(td) unless scraping_brand_name(td).nil?
-        game[:price]             = scraping_price(td) unless scraping_price(td).nil?
+        game['release_date']      = scraping_date(td) unless scraping_date(td).nil?
+        game['title']             = scraping_title(td) unless scraping_title(td).nil?
+        game['introduction_page'] = scraping_introduction_page(td) unless scraping_introduction_page(td).nil?
+        game['id']                = scraping_id(td) unless scraping_id(td).nil?
+        game['brand_name']        = scraping_brand_name(td) unless scraping_brand_name(td).nil?
+        game['price']             = scraping_price(td) unless scraping_price(td).nil?
       end
 
       # 取得したゲームの情報をゲームの発売リストに追加
@@ -92,9 +92,11 @@ class ReleaseListScraping < GetchyaScraping
 
   # 発売日をスクレイピングする
   #   「日付」項目 <tr align="center" class="balack">の部分を取得し返す
-  #   日付の部分には改行文字があるので削除して日付を取得する
+  #   日付の部分には改行文字・タブ文字があるので削除して日付を取得する
   def scraping_date(td)
-    return td.content.to_s.gsub(/[\r\n]/, '') if td[:align].to_s.include?('center') && td[:class].to_s.include?('black')
+    if td[:align].to_s.include?('center') && td[:class].to_s.include?('black')
+      td.content.to_s.gsub(/[\r\n]/, '').to_s.gsub(/[\t]/, '')
+    end
   end
 
   # ソフト名をスクレイピングする
