@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './getchya_scraping.rb'
+require './getchya_scraping/getchya_scraping.rb'
 
 # げっちゅ屋の「ゲーム紹介」ページをスクレイピングし
 # ゲーム情報を取得するスクレイピングクラス
