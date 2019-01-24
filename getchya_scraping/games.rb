@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require './release_list_scraping.rb'
-require './introduction_page_scraping.rb'
-require './getchya_scraping.rb'
+require './getchya_scraping/release_list_scraping.rb'
+require './getchya_scraping/introduction_page_scraping.rb'
+require './getchya_scraping/getchya_scraping.rb'
 require 'json'
 require 'csv'
 

@@ -12,7 +12,7 @@
 /vendor/bundle
 
 # キャッシュフォルダ内のファイルの除外
-/cache
+getchya_scraping/cache
 
 # 作成フォルダ内のファイルの除外
-/created
+getchya_scraping/created

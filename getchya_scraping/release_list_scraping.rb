@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require './getchya_scraping.rb'
+require './getchya_scraping/getchya_scraping.rb'
 require 'date'
 
 # げっちゅ屋の「月発売タイトル一覧・ゲーム」ページをスクレイピングし
