@@ -5,13 +5,14 @@ require './getchya_scraping/introduction_page_scraping.rb'
 require './getchya_scraping/getchya_scraping.rb'
 require './getchya_scraping/games.rb'
 
-games = Games.new(false, '201902')
+# games = Games.new(false, '201902')
+games = Games.new
 games.where = {
   'voice_actor' => 'ゆい'
 }
 puts games.to_json
-games.create_csv
-games.create_json
+# games.create_csv
+# games.create_json
 
 # # ゲーム情報を格納する配列
 # game_list = []
