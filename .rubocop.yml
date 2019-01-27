@@ -40,3 +40,8 @@ Metrics/CyclomaticComplexity:
 # ABC sizeチェックの計算方法は「https://github.com/rubocop-hq/rubocop/blob/master/lib/rubocop/cop/metrics/abc_size.rb」
 Metrics/AbcSize:
   Max: 40
+
+# MarshalLoad.load(dump)の使用を許可する
+# コマンドラインツールのため、Marshal.loadを安全に使用できるため
+Security/MarshalLoad:
+  Enabled: false

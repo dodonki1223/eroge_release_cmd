@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require './release_list_scraping.rb'
-require './introduction_page_scraping.rb'
-require './getchya_scraping.rb'
+require './getchya_scraping/release_list_scraping.rb'
+require './getchya_scraping/introduction_page_scraping.rb'
+require './getchya_scraping/getchya_scraping.rb'
 require 'json'
 require 'csv'
 
@@ -31,15 +31,16 @@ class Games
 
     # キャッシュファイルのパス名を作成
     # キャッシュクリアの時はキャッシュをクリアする
-    @cache_file = get_file_path(CACHE_PATH, "#{@year}#{@month}.json")
+    @cache_file = get_file_path(CACHE_PATH, "#{@year}#{@month}")
     clear_cache(@cache_file) if cleared_cache
 
     # ゲーム情報をセットする（げっちゅ屋よりスクレイピングして取得する）
     @games = get_games(cache_file)
 
-    # キャッシュフォルダへキャッシュファイル（jsonファイル）を作成する
-    # ※ファイル名は「YYYYMM.json」の形式とする
-    create_json(@cache_file)
+    # キャッシャファイルが存在しない時、キャッシュフォルダへキャッシュ
+    # ファイル（ゲーム情報をシリアライズしたもの）を作成する
+    # ※ファイル名は「YYYYMM」の形式とする
+    create_cache(@cache_file, @games) unless cached?(cache_file)
 
     # 年月情報をセットする
     @year_month = "#{@year}年#{@month}月"
@@ -89,7 +90,7 @@ class Games
   #   グして取得する。インスタンス変数のgames、year、monthに値をセットする
   def get_games(cache_file)
     # キャッシュファイルが存在する時はスクレイピングを行わずキャッシュファイルから読み込む
-    return read_cache(cache_file) if cached?(cache_file)
+    return load_cache(cache_file) if cached?(cache_file)
 
     # げっちゅ屋の「月発売タイトル一覧・ゲーム」の一覧をスクレイピングして取得する
     release_list = @release_list.scraping
@@ -156,19 +157,32 @@ class Games
     File.open(path, 'wb') { |file| file.puts content }
   end
 
-  # キャッシュファイルが存在するか？
-  def cached?(cache_file)
-    File.exist?(cache_file)
+  # キャッシュファイルを作成する
+  #   シリアライズしたものをキャッシュファイルとして保存する
+  #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
+  def create_cache(path, content)
+    # File.open(path, 'wb') { |file|
+    #   serialize_file = Marshal.dump(content)
+    #   file.puts(serialize_file)
+    # }
+    File.open(path, 'wb') do |file|
+      serialize_file = Marshal.dump(content)
+      file.puts(serialize_file)
+    end
   end
 
   # キャッシュファイルを読み込む
-  #   キャッシュファイル（jsonファイル）を配列で読み込み返す
-  #   ※JSON.parseを使用するとHashは['key' => 'value']の形で取得されるので他
-  #     の部分も['key' => 'value']の形式を意識して作成されている
-  def read_cache(cache_file)
-    File.open(cache_file) do |cache|
-      JSON.parse(cache.read)
-    end
+  #   シリアライズされたキャッシュファイルをデシリアライズして読み込む
+  #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
+  def load_cache(cache_file)
+    deserialize_file = ''
+    File.open(cache_file, 'r') { |file| deserialize_file = file.read }
+    Marshal.load(deserialize_file)
+  end
+
+  # キャッシュファイルが存在するか？
+  def cached?(cache_file)
+    File.exist?(cache_file)
   end
 
   # キャッシュファイルをクリアする
