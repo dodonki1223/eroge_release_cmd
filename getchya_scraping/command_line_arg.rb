@@ -6,6 +6,8 @@ require 'optparse'
 #   コマンドから受け取ったコマンドライン引数をパースして
 #   プログラムから扱えるようにする機能を提供する
 class CommandLineArg
+  attr_accessor :options
+
   # コンストラクタ
   #   コマンドライン引数を受け取れるキーワードの設定、ヘルプコマンドが実行
   #   された時のメッセージの設定
@@ -42,7 +44,7 @@ class CommandLineArg
   # 対象のコマンドライン引数の値を取得する
   #   対象のコマンドライン引数の値が存在しない場合は空文字を返す
   def get(name)
-    return '' unless has?
+    return '' unless has?(name)
 
     @options[name]
   end

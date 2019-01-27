@@ -6,7 +6,7 @@ require './getchya_scraping/getchya_scraping.rb'
 require './getchya_scraping/games.rb'
 
 # games = Games.new(false, '201902')
-games = Games.new
+games = Games.new(false, '201902')
 games.where = {
   'voice_actor' => 'ゆい'
 }
