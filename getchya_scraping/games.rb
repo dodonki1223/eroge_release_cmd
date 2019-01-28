@@ -46,6 +46,12 @@ class Games
     @year_month = "#{@year}年#{@month}月"
   end
 
+  # ゲーム情報を取得する
+  #   ゲーム情報を絞り込んだ状態で取得する
+  def game_list
+    filtering
+  end
+
   # ゲーム情報をjson形式に変換して返す
   #   ゲーム情報をげっちゅ屋からスクレイピングしその結果をjson形式に変換して返す
   def to_json
@@ -68,15 +74,15 @@ class Games
       csv << HEADER_COLUMNS
       filtering.each do |game|
         csv << [
-          game['id'],
-          game['release_date'],
-          game['title'],
-          game['package_image'],
-          game['price'],
-          game['introduction_page'],
-          game['brand_name'],
-          game['brand_page'],
-          game['voice_actor']
+          game[:id],
+          game[:release_date],
+          game[:title],
+          game[:package_image],
+          game[:price],
+          game[:introduction_page],
+          game[:brand_name],
+          game[:brand_page],
+          game[:voice_actor].join('、')
         ]
       end
     end
@@ -99,7 +105,7 @@ class Games
     games = []
     release_list.each do |game|
       # ゲームの紹介ページからスクレイピングし「パッケージ画像」、「ブランドページ」、「声優情報」を取得する
-      introduction_page = IntroductionPageScraping.new(game['id'])
+      introduction_page = IntroductionPageScraping.new(game[:id])
       # 「月発売タイトル一覧・ゲーム」と「パッケージ画像」、「ブランドページ」、「声優情報」をマージする
       game_info = game.merge(introduction_page.scraping)
       games.push(game_info)
@@ -116,19 +122,18 @@ class Games
 
     # 絞り込み条件を元にゲーム情報を絞り込む
     filtering_games = @games
-    @where.each do |w|
-      # キー、値を取得する
-      key   = w.to_a[0]
-      value = w.to_a[1]
+    @where.each_pair do |key, value|
       # ゲーム情報からデータを絞り込む
       filtering_games = filtering_games.select do |game|
-        # 配列でない場合は対象の値が含まれている時はtrueを含まれていない時はfalseを返す
-        return game[key].include?(value) unless game[key].is_a?(Array)
-
-        # 配列の時は対象の値が含まれている値があるものを取得し、
-        # それが１件以上の時はtrueを返し、そうでない時はfalseを返す
-        result = game[key].select { |a| a.include?(value) }
-        result.size >= 1
+        if game[key].is_a?(Array)
+          # 配列の時は対象の値が含まれている値があるものを取得し、
+          # それが１件以上の時はtrueを返し、そうでない時はfalseを返す
+          result = game[key].select { |a| a.include?(value) }
+          result.size >= 1
+        else
+          # 配列でない時は対象の値が含まれている時はtrueを返し、そうでない時はfalseを返す
+          game[key.to_sym].to_s.include?(value)
+        end
       end
     end
     filtering_games
@@ -161,10 +166,6 @@ class Games
   #   シリアライズしたものをキャッシュファイルとして保存する
   #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
   def create_cache(path, content)
-    # File.open(path, 'wb') { |file|
-    #   serialize_file = Marshal.dump(content)
-    #   file.puts(serialize_file)
-    # }
     File.open(path, 'wb') do |file|
       serialize_file = Marshal.dump(content)
       file.puts(serialize_file)

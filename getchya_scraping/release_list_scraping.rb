@@ -57,16 +57,16 @@ class ReleaseListScraping < GetchyaScraping
       next unless tr.css('td').to_a.length != 4
 
       # ゲーム情報を格納するHashを初期化する
-      game = { 'id' => '', 'title' => '', 'release_date' => '', 'brand_name' => '', 'price' => '', 'introduction_page' => '' }
+      game = {}
 
       # trタグ内のtdタグごと繰り返す
       tr.css('td').each do |td|
-        game['release_date']      = scraping_date(td) unless scraping_date(td).nil?
-        game['title']             = scraping_title(td) unless scraping_title(td).nil?
-        game['introduction_page'] = scraping_introduction_page(td) unless scraping_introduction_page(td).nil?
-        game['id']                = scraping_id(td) unless scraping_id(td).nil?
-        game['brand_name']        = scraping_brand_name(td) unless scraping_brand_name(td).nil?
-        game['price']             = scraping_price(td) unless scraping_price(td).nil?
+        game[:release_date]      = "#{@year}/#{scraping_date(td)}" unless scraping_date(td).nil?
+        game[:title]             = scraping_title(td) unless scraping_title(td).nil?
+        game[:introduction_page] = scraping_introduction_page(td) unless scraping_introduction_page(td).nil?
+        game[:id]                = scraping_id(td) unless scraping_id(td).nil?
+        game[:brand_name]        = scraping_brand_name(td) unless scraping_brand_name(td).nil?
+        game[:price]             = scraping_price(td) unless scraping_price(td).nil?
       end
 
       # 取得したゲームの情報をゲームの発売リストに追加
