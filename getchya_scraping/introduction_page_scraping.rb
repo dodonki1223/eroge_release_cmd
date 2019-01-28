@@ -67,17 +67,23 @@ class IntroductionPageScraping < GetchyaScraping
       package_image_url.slice!(0, 1)
       return ROOT_URI + package_image_url
     end
+    # 何も取得出来なかった時は空文字を返す
+    # ※パッケージ画像がない時は何も取得出来ないため
+    ''
   end
 
   # 対象のゲームのブランドの公式ページをスクレイピングする
   #   ブランドの公式ページのURLを取得し返す
   def scraping_brand_page(html)
     html.css('table > tr > td > a').each do |a|
-      # パッケージ画像でなかったら次の要素へ
+      # ブランドのURLでなかったら次の要素へ
       next unless a[:title].to_s.include?('このブランドの公式サイトを開く')
 
       return a[:href]
     end
+    # 何も取得出来なかった時は空文字を返す
+    # ※ブランドのページがない時は何も取得できないため
+    ''
   end
 
   # ゲームに出演している声優情報をスクレイピングする

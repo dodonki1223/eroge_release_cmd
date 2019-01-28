@@ -46,6 +46,12 @@ class Games
     @year_month = "#{@year}年#{@month}月"
   end
 
+  # ゲーム情報を取得する
+  #   ゲーム情報を絞り込んだ状態で取得する
+  def game_list
+    filtering
+  end
+
   # ゲーム情報をjson形式に変換して返す
   #   ゲーム情報をげっちゅ屋からスクレイピングしその結果をjson形式に変換して返す
   def to_json
@@ -76,7 +82,7 @@ class Games
           game[:introduction_page],
           game[:brand_name],
           game[:brand_page],
-          game[:voice_actor]
+          game[:voice_actor].join('、')
         ]
       end
     end
@@ -160,10 +166,6 @@ class Games
   #   シリアライズしたものをキャッシュファイルとして保存する
   #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
   def create_cache(path, content)
-    # File.open(path, 'wb') { |file|
-    #   serialize_file = Marshal.dump(content)
-    #   file.puts(serialize_file)
-    # }
     File.open(path, 'wb') do |file|
       serialize_file = Marshal.dump(content)
       file.puts(serialize_file)

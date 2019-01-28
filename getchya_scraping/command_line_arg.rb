@@ -21,16 +21,26 @@ class CommandLineArg
         puts opt
         exit
       end
-      # ヘルプコマンド以外のコマンドライン引数を設定する
+
+      # 値を受け取る系のコマンドライン引数を設定する
       opt.on('-y', '--year_month [YEAR_MONTH]', 'Set Target Year And Month') { |v| @options[:year_month] = v }
       opt.on('-v', '--voice_actor [VOICE_ACTOR]', 'Narrow down by voice actor name') { |v| @options[:voice_actor] = v }
       opt.on('-t', '--title [TITLE]', 'Filter by title') { |v| @options[:title] = v }
-      opt.on('-b', '--brand [BRAND]', 'Narrow down by brand') { |v| @options[:brand] = v }
-      opt.on('-o', '--open [OPEN]', 'Open game page in browser') { |v| @options[:open] = v }
-      opt.on('-c', '--csv [CSV]', 'Create a csv file') { |v| @options[:csv] = v }
-      opt.on('-j', '--json [JSON]', 'Create a json file') { |v| @options[:json] = v }
-      opt.on('--simple [SIMPLE]', 'Display results in a simplified way') { |v| @options[:simple] = v }
-      opt.on('--title_only [TITLE_ONLY]', 'Show game title only') { |v| @options[:title_only] = v }
+      opt.on('-b', '--brand_name [BRAND_NAME]', 'Narrow down by brand_name') { |v| @options[:brand_name] = v }
+
+      # true、falseを受け取るコマンドライン引数を設定する
+      # デフォルト値はすべてfalseとし、受け取ったものにはtrueをセットする
+      @options[:open]        = false
+      @options[:csv]         = false
+      @options[:json]        = false
+      @options[:clear_cache] = false
+      @options[:simple]      = false
+      opt.on('-o', '--open [OPEN]', 'Open game page in browser') { @options[:open] = true }
+      opt.on('-c', '--csv [CSV]', 'Create a csv file') { @options[:csv] = true }
+      opt.on('-j', '--json [JSON]', 'Create a json file') { @options[:json] = true }
+      opt.on('--clear_cache [CLEAR_CACHE]', 'Clear the cache') { @options[:clear_cache] = true }
+      opt.on('--simple [SIMPLE]', 'Display results in a simplified way') { @options[:simple] = true }
+
       # コマンドラインをparseする
       opt.parse!(ARGV)
     end

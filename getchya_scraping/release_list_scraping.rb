@@ -61,7 +61,7 @@ class ReleaseListScraping < GetchyaScraping
 
       # trタグ内のtdタグごと繰り返す
       tr.css('td').each do |td|
-        game[:release_date]      = scraping_date(td) unless scraping_date(td).nil?
+        game[:release_date]      = "#{@year}/#{scraping_date(td)}" unless scraping_date(td).nil?
         game[:title]             = scraping_title(td) unless scraping_title(td).nil?
         game[:introduction_page] = scraping_introduction_page(td) unless scraping_introduction_page(td).nil?
         game[:id]                = scraping_id(td) unless scraping_id(td).nil?
