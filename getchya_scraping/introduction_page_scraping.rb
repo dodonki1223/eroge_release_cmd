@@ -99,6 +99,6 @@ class IntroductionPageScraping < GetchyaScraping
         voice_actors.push(voice_actor_name)
       end
     end
-    voice_actors
+    voice_actors.uniq
   end
 end
