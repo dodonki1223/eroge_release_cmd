@@ -17,10 +17,10 @@ class IntroductionPageScraping < GetchyaScraping
     # IDがnilの場合は引数エラーの例外を発生させる
     raise ArgumentError, 'IDは必ず指定して下さい' if id.nil?
 
-    @id               = id                                                                 # スクレイピングするゲームのID（げっちゅ屋が管理しているID）
-    @url_parameter_id = ['id', id]                                                         # URLパラメータのID
-    @game_info        = { 'package_image' => '', 'brand_page' => '', 'voice_actor' => '' } # スクレイピングしたゲーム情報を格納するHash
-    @uri              = target_uri                                                         # スクレイピング対象のURL
+    @id               = id         # スクレイピングするゲームのID（げっちゅ屋が管理しているID）
+    @url_parameter_id = ['id', id] # URLパラメータのID
+    @game_info        = {}         # スクレイピングしたゲーム情報を格納するHash
+    @uri              = target_uri # スクレイピング対象のURL
   end
 
   # スクレイピング
@@ -31,9 +31,9 @@ class IntroductionPageScraping < GetchyaScraping
     parsed_html = GetchyaScraping.parsed_html_for_uri(uri)
 
     # 紹介ページからゲーム情報をスクレイピングする
-    @game_info['package_image'] = scraping_package_image(parsed_html)
-    @game_info['brand_page']    = scraping_brand_page(parsed_html)
-    @game_info['voice_actor']   = scraping_voice_actors(parsed_html)
+    @game_info[:package_image] = scraping_package_image(parsed_html)
+    @game_info[:brand_page]    = scraping_brand_page(parsed_html)
+    @game_info[:voice_actor]   = scraping_voice_actors(parsed_html)
     @game_info
   end
 
@@ -67,17 +67,23 @@ class IntroductionPageScraping < GetchyaScraping
       package_image_url.slice!(0, 1)
       return ROOT_URI + package_image_url
     end
+    # 何も取得出来なかった時は空文字を返す
+    # ※パッケージ画像がない時は何も取得出来ないため
+    ''
   end
 
   # 対象のゲームのブランドの公式ページをスクレイピングする
   #   ブランドの公式ページのURLを取得し返す
   def scraping_brand_page(html)
     html.css('table > tr > td > a').each do |a|
-      # パッケージ画像でなかったら次の要素へ
+      # ブランドのURLでなかったら次の要素へ
       next unless a[:title].to_s.include?('このブランドの公式サイトを開く')
 
       return a[:href]
     end
+    # 何も取得出来なかった時は空文字を返す
+    # ※ブランドのページがない時は何も取得できないため
+    ''
   end
 
   # ゲームに出演している声優情報をスクレイピングする
