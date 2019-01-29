@@ -122,7 +122,7 @@ should_create_json = command_line_args.get(:json)        # jsonファイルを�
 # ---------------------------------
 begin
   games = get_gams_instance(has_clear_cache, year_month)
-rescue => e
+rescue StandardError => e
   # 例外メッセージとバックトレースを表示して処理を終了する
   puts "#{e.message}(#{e.class})"
   puts e.backtrace

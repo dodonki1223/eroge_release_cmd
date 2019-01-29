@@ -25,7 +25,7 @@ class CommandLineArg
 
       # げっちゅ屋のrobots.txtの内容を表示するコマンドを設定
       opt.on('--robots', 'Display contents of robots.txt') do
-        puts GetchyaScraping::robots
+        puts GetchyaScraping.robots
         exit
       end
 
