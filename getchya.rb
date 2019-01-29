@@ -5,6 +5,7 @@
 #   してゲーム情報を確認できるコマンドラインツールです
 # -------------------------------------------------------------------------
 #   -h, --help                       Show this help
+#       --robots                     Display contents of robots.txt
 #   -y, --year_month [YEAR_MONTH]    Set Target Year And Month
 #   -v, --voice_actor [VOICE_ACTOR]  Narrow down by voice actor name
 #   -t, --title [TITLE]              Filter by title
@@ -119,7 +120,14 @@ should_create_json = command_line_args.get(:json)        # jsonファイルを�
 # ---------------------------------
 #  ゲーム情報の取得
 # ---------------------------------
-games = get_gams_instance(has_clear_cache, year_month)
+begin
+  games = get_gams_instance(has_clear_cache, year_month)
+rescue => e
+  # 例外メッセージとバックトレースを表示して処理を終了する
+  puts "#{e.message}(#{e.class})"
+  puts e.backtrace
+  exit
+end
 getchya_games = filtering_games(games, title, brand_name, voice_actor)
 
 # ---------------------------------

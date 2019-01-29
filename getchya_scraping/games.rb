@@ -115,7 +115,6 @@ class Games
 
   # ゲーム情報を絞り込む
   #   @where変数に指定されている条件を元にゲーム情報を絞り込む
-  #   絞り込みが出来る情報を
   def filtering
     # 絞り込み条件が指定されていなかった場合はそのままゲーム情報を返す
     return @games if @where.nil?
@@ -188,12 +187,10 @@ class Games
 
   # キャッシュファイルをクリアする
   #   キャッシュファイルを削除する。削除対象のキャッシュファイルが
-  #   存在しない場合はエラーメッセージをコンソールに表示する
+  #   存在しない場合は何も行わない
   def clear_cache(cache_file)
-    File.delete(cache_file)
+    File.delete(cache_file) if cached?(cache_file)
   rescue StandardError => e
-    puts '<キャッシュファイルの削除に失敗しました>'
-    puts e.message
-    puts e.backtrace
+    raise e.class, 'キャッシュファイルの削除に失敗しました'
   end
 end

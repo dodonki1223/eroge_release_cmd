@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require './getchya_scraping/getchya_scraping.rb'
 
 # コマンドライン引数クラス
 #   コマンドから受け取ったコマンドライン引数をパースして
@@ -22,11 +23,17 @@ class CommandLineArg
         exit
       end
 
+      # げっちゅ屋のrobots.txtの内容を表示するコマンドを設定
+      opt.on('--robots', 'Display contents of robots.txt') do
+        puts GetchyaScraping::robots
+        exit
+      end
+
       # 値を受け取る系のコマンドライン引数を設定する
-      opt.on('-y', '--year_month [YEAR_MONTH]', 'Set Target Year And Month') { |v| @options[:year_month] = v }
-      opt.on('-v', '--voice_actor [VOICE_ACTOR]', 'Narrow down by voice actor name') { |v| @options[:voice_actor] = v }
-      opt.on('-t', '--title [TITLE]', 'Filter by title') { |v| @options[:title] = v }
-      opt.on('-b', '--brand_name [BRAND_NAME]', 'Narrow down by brand_name') { |v| @options[:brand_name] = v }
+      opt.on('-y', '--year_month [YEAR_MONTH]', 'Set Target Year And Month') { |v| set_command_line_arg_value(v, :year_month, '年月') }
+      opt.on('-v', '--voice_actor [VOICE_ACTOR]', 'Narrow down by voice actor name') { |v| set_command_line_arg_value(v, :voice_actor, '声優名') }
+      opt.on('-t', '--title [TITLE]', 'Filter by title') { |v| set_command_line_arg_value(v, :title, 'タイトル名') }
+      opt.on('-b', '--brand_name [BRAND_NAME]', 'Narrow down by brand_name') { |v| set_command_line_arg_value(v, :brand_name, 'ブランド名') }
 
       # true、falseを受け取るコマンドライン引数を設定する
       # デフォルト値はすべてfalseとし、受け取ったものにはtrueをセットする
@@ -57,5 +64,17 @@ class CommandLineArg
     return '' unless has?(name)
 
     @options[name]
+  end
+
+  private
+
+  # コマンドライン引数をインスタンス変数にセットする
+  #   もし対象のコマンドライン引数がnilの時はメッセージを表示して処理を終了する
+  def set_command_line_arg_value(value, key, param_name)
+    if value.nil?
+      puts "#{param_name}のパラメータを指定して下さい"
+      exit
+    end
+    @options[key] = value
   end
 end
