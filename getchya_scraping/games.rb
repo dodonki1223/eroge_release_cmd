@@ -163,7 +163,6 @@ class Games
 
   # キャッシュファイルを作成する
   #   シリアライズしたものをキャッシュファイルとして保存する
-  #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
   def create_cache(path, content)
     File.open(path, 'wb') do |file|
       serialize_file = Marshal.dump(content)
@@ -173,7 +172,6 @@ class Games
 
   # キャッシュファイルを読み込む
   #   シリアライズされたキャッシュファイルをデシリアライズして読み込む
-  #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
   def load_cache(cache_file)
     deserialize_file = ''
     File.open(cache_file, 'r') { |file| deserialize_file = file.read }
