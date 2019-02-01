@@ -22,7 +22,7 @@ require './getchya_scraping/games.rb'
 
 # Gamesクラスのインスタンスを取得する
 #   Gamesクラスのインスタンスをキャッシュクリア区分、年月の引数に応じて取得する
-def get_gams_instance(has_clear_cache, year_month)
+def get_games_instance(has_clear_cache, year_month)
   return Games.new(has_clear_cache) if year_month.empty?
 
   Games.new(has_clear_cache, year_month)
@@ -106,7 +106,7 @@ end
 # ---------------------------------
 #  コマンドライン引数を取得する
 # ---------------------------------
-command_line_args = CommandLineArg.new
+command_line_args  = CommandLineArg.new
 year_month         = command_line_args.get(:year_month)  # 年月
 title              = command_line_args.get(:title)       # 絞り込み用のタイトル
 brand_name         = command_line_args.get(:brand_name)  # 絞り込み用のブランド名
@@ -121,7 +121,7 @@ should_create_json = command_line_args.get(:json)        # jsonファイルを�
 #  ゲーム情報の取得
 # ---------------------------------
 begin
-  games = get_gams_instance(has_clear_cache, year_month)
+  games = get_games_instance(has_clear_cache, year_month)
 rescue StandardError => e
   # 例外メッセージとバックトレースを表示して処理を終了する
   puts "#{e.message}(#{e.class})"

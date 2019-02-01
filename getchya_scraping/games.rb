@@ -3,6 +3,7 @@
 require './getchya_scraping/release_list_scraping.rb'
 require './getchya_scraping/introduction_page_scraping.rb'
 require './getchya_scraping/getchya_scraping.rb'
+require './getchya_scraping/extended_string'
 require 'json'
 require 'csv'
 
@@ -127,11 +128,11 @@ class Games
         if game[key].is_a?(Array)
           # 配列の時は対象の値が含まれている値があるものを取得し、
           # それが１件以上の時はtrueを返し、そうでない時はfalseを返す
-          result = game[key].select { |a| a.include?(value) }
+          result = game[key].select { |a| a.multiple_include?(value) }
           result.size >= 1
         else
           # 配列でない時は対象の値が含まれている時はtrueを返し、そうでない時はfalseを返す
-          game[key.to_sym].to_s.include?(value)
+          game[key.to_sym].to_s.multiple_include?(value)
         end
       end
     end
@@ -163,7 +164,6 @@ class Games
 
   # キャッシュファイルを作成する
   #   シリアライズしたものをキャッシュファイルとして保存する
-  #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
   def create_cache(path, content)
     File.open(path, 'wb') do |file|
       serialize_file = Marshal.dump(content)
@@ -173,7 +173,6 @@ class Games
 
   # キャッシュファイルを読み込む
   #   シリアライズされたキャッシュファイルをデシリアライズして読み込む
-  #   Marshal:Rubyオブジェクトを文字列化して、ファイルに読み書き出来る
   def load_cache(cache_file)
     deserialize_file = ''
     File.open(cache_file, 'r') { |file| deserialize_file = file.read }
