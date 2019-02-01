@@ -106,7 +106,7 @@ end
 # ---------------------------------
 #  コマンドライン引数を取得する
 # ---------------------------------
-command_line_args = CommandLineArg.new
+command_line_args  = CommandLineArg.new
 year_month         = command_line_args.get(:year_month)  # 年月
 title              = command_line_args.get(:title)       # 絞り込み用のタイトル
 brand_name         = command_line_args.get(:brand_name)  # 絞り込み用のブランド名

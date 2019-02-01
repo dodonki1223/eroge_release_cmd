@@ -75,6 +75,9 @@ class CommandLineArg
       puts "#{param_name}のパラメータを指定して下さい"
       exit
     end
-    @options[key] = value
+    # 配列かどうかを取得し、配列の時は配列をセットそうでない時は値をそのままセットする
+    is_array = value.split(',').count > 1
+    set_value = is_array ? value.split(',') : value
+    @options[key] = set_value
   end
 end
