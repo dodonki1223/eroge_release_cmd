@@ -7,7 +7,7 @@ require 'open-uri'
 # げっちゅ屋のスクレイピングで使用するクラスです
 # ※create_uri、parsed_html_for_uriだけなのでmoduleでもいいような気がするが、今後
 #   のことも考えとりあえずclassとする
-class GetchyaScraping
+class GetchuyaScraping
   # げっちゅ屋のルートURL
   ROOT_URI = 'http://www.getchu.com'
   # robots.txtのURL（クローラーのWEBページへのアクセスを制限するためのファイル）

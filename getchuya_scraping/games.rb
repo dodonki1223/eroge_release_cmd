@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require './getchya_scraping/release_list_scraping.rb'
-require './getchya_scraping/introduction_page_scraping.rb'
-require './getchya_scraping/getchya_scraping.rb'
-require './getchya_scraping/extended_string'
+require './getchuya_scraping/release_list_scraping.rb'
+require './getchuya_scraping/introduction_page_scraping.rb'
+require './getchuya_scraping/getchuya_scraping.rb'
+require './getchuya_scraping/extended_string'
 require 'json'
 require 'csv'
 
