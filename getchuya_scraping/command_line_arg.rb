@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require './getchya_scraping/getchya_scraping.rb'
+require './getchuya_scraping/getchuya_scraping.rb'
 
 # コマンドライン引数クラス
 #   コマンドから受け取ったコマンドライン引数をパースして
@@ -25,7 +25,7 @@ class CommandLineArg
 
       # げっちゅ屋のrobots.txtの内容を表示するコマンドを設定
       opt.on('--robots', 'Display contents of robots.txt') do
-        puts GetchyaScraping.robots
+        puts GetchuyaScraping.robots
         exit
       end
 
