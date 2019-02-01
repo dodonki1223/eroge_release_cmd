@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require './getchya_scraping/getchya_scraping.rb'
+require './getchuya_scraping/getchuya_scraping.rb'
 require 'date'
 
 # げっちゅ屋の「月発売タイトル一覧・ゲーム」ページをスクレイピングし
 # 発売リスト情報を取得するスクレイピングクラス
-class ReleaseListScraping < GetchyaScraping
+class ReleaseListScraping < GetchuyaScraping
   attr_accessor :year_month, :year, :month, :uri
 
   # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURL
@@ -46,7 +46,7 @@ class ReleaseListScraping < GetchyaScraping
   def scraping
     # スクレイピング対象のURLを作成し、そのURLをNokogiriで解析した結果を取得
     uri = target_uri
-    parsed_html = GetchyaScraping.parsed_html_for_uri(uri)
+    parsed_html = GetchuyaScraping.parsed_html_for_uri(uri)
 
     # 解析した結果からtrタグごと繰り返す
     parsed_html.css('table > tr').each do |tr|
@@ -80,7 +80,7 @@ class ReleaseListScraping < GetchyaScraping
   # スクレイピング対象のURLを取得する
   #   URLパラメーターも付加した形で取得する
   def target_uri
-    GetchyaScraping.create_uri(RELEASE_LIST_URI, url_param)
+    GetchuyaScraping.create_uri(RELEASE_LIST_URI, url_param)
   end
 
   # URLパラメーター

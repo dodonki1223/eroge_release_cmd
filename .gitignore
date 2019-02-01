@@ -12,7 +12,10 @@
 /vendor/bundle
 
 # キャッシュフォルダ内のファイルの除外
-getchya_scraping/cache
+getchuya_scraping/cache
 
 # 作成フォルダ内のファイルの除外
-getchya_scraping/created
+getchuya_scraping/created
+
+# IntelliJ IDEAが作成するファイルの除外
+/.idea
