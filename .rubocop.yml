@@ -1,3 +1,6 @@
+# Rspec用のrubocopの読み込み
+require: rubocop-rspec
+
 AllCops:
   # Rubyのバージョン指定
   TargetRubyVersion: 2.3.7
@@ -44,4 +47,9 @@ Metrics/AbcSize:
 # MarshalLoad.load(dump)の使用を許可する
 # コマンドラインツールのため、Marshal.loadを安全に使用できるため
 Security/MarshalLoad:
+  Enabled: false
+
+# ブロックコメントの使用を許可する
+# ※spec_helper.rbでブロックコメントを使用しているのでとりあえず使用を許可しておく
+Style/BlockComments:
   Enabled: false
