@@ -4,8 +4,6 @@ source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-# gem "rails"
-
 # スクレイピングをするためのライブラリ
 # ※1.9.0以上2.0.0未満の最新のものを使用
 gem 'nokogiri', '~> 1.9'
@@ -21,4 +19,9 @@ group :development do
   # Rubyのテストフレームワーク
   # ※Ruby における BDD (behavior driven development、ビヘイビア駆動開発) の ためのテストフレームワーク
   gem 'rspec', '>= 3.8.0'
+  # httpリクエストをスタブ化するライブラリ
+  gem 'webmock'
+  # テストで使う「HTTP通信」を１回目に記録しておいて、２回目以降のテストでの実行時間を短縮し、効率的な
+  # テストを支援してくれるGem（「酒と涙とRubyとRailsと」より）
+  gem 'vcr'
 end

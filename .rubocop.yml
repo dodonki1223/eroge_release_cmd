@@ -53,3 +53,9 @@ Security/MarshalLoad:
 # ※spec_helper.rbでブロックコメントを使用しているのでとりあえず使用を許可しておく
 Style/BlockComments:
   Enabled: false
+
+# ブロックの長さの制限をRspecは除外する
+# ※RspecはDSLのため１つのブロックで行数が増えてしまうのはしょうがないため
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'

@@ -15,6 +15,27 @@
 # it.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require 'webmock/rspec'
+require 'vcr'
+
+# Webmock用のデータの作成用設定
+# ※vcrを使用し、簡単に作成する
+VCR.configure do |c|
+  # vcrで作成されるファイルの保存先
+  c.cassette_library_dir = 'spec/vcr'
+  # hook対象のライブラリ
+  c.hook_into :webmock
+  # vcrブロック外のHTTP通信は許可する
+  # ※これをtrueにしないとvcr外でHTTP通信を行なうと「UnhandledHTTPRequestError」
+  #   が発生してしまう
+  c.allow_http_connections_when_no_cassette = true
+  # vcrで作成するymlファイルの作成方法設定
+  # Once,New_episodes,None,Allがある
+  # https://relishapp.com/vcr/vcr/v/3-0-3/docs/record-modes/new-episodes
+  c.default_cassette_options = { record: :new_episodes }
+end
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
