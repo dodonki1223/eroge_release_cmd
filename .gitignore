@@ -22,3 +22,6 @@ getchuya_scraping/created
 
 # vcrが作成するファイルの除外
 /spec/vcr
+
+# config.jsonの除外設定
+/spreadsheet/google_drive_config.json
