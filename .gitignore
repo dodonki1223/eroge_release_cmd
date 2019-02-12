@@ -19,3 +19,9 @@ getchuya_scraping/created
 
 # IntelliJ IDEAが作成するファイルの除外
 /.idea
+
+# vcrが作成するファイルの除外
+/spec/vcr
+
+# config.jsonの除外設定
+/spreadsheet/google_drive_config.json
