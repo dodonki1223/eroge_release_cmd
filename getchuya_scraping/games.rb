@@ -59,17 +59,25 @@ class Games
     JSON.pretty_generate(filtering)
   end
 
+  # jsonファイルへのフルパスを取得する
+  def json_file_path
+    get_file_path(CREATED_PATH, "#{@year}#{@month}.json")
+  end
+
   # jsonファイルを作成する
   #   対象のパスにjsonファイルを作成する（デフォルト値はcreatedフォルダ内に作成する）
-  def create_json(path = get_file_path(CREATED_PATH, "#{@year}#{@month}.json"))
+  def create_json(path = json_file_path)
     create_file(path, to_json)
+  end
+
+  # CSVファイルへのフルパスを取得する
+  def csv_file_path
+    get_file_path(CREATED_PATH, "#{@year}#{@month}.csv")
   end
 
   # CSVファイルを作成する
   #   スクレイピングした結果をCSVファイルとして作成する
-  def create_csv
-    # CSVファイルのフルパスを取得する
-    csv_file = get_file_path(CREATED_PATH, "#{@year}#{@month}.csv")
+  def create_csv(csv_file = csv_file_path)
     # スクレイピングした結果からCSVファイルを新規作成する
     CSV.open(csv_file, 'wb', force_quotes: true) do |csv|
       csv << HEADER_COLUMNS

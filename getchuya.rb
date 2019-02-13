@@ -4,21 +4,27 @@
 #   げっちゅ屋の発売リストページから発売情報とゲーム情報をスクレイピング
 #   してゲーム情報を確認できるコマンドラインツールです
 # -------------------------------------------------------------------------
-#   -h, --help                       Show this help
-#       --robots                     Display contents of robots.txt
-#   -y, --year_month [YEAR_MONTH]    Set Target Year And Month
-#   -v, --voice_actor [VOICE_ACTOR]  Narrow down by voice actor name
-#   -t, --title [TITLE]              Filter by title
-#   -b, --brand_name [BRAND_NAME]    Narrow down by brand_name
-#   -o, --open [OPEN]                Open game page in browser
-#   -c, --csv [CSV]                  Create a csv file
-#   -j, --json [JSON]                Create a json file
-#       --clear_cache [CLEAR_CACHE]  Clear the cache
-#       --simple [SIMPLE]            Display results in a simplified way
+# -h, --help                       Show this help
+#     --robots                     Display contents of robots.txt
+# -y, --year_month [YEAR_MONTH]    Set Target Year And Month
+# -v, --voice_actor [VOICE_ACTOR]  Narrow down by voice actor name
+# -t, --title [TITLE]              Filter by title
+# -b, --brand_name [BRAND_NAME]    Narrow down by brand_name
+# -o, --open [OPEN]                Open game page in browser
+# -c, --csv [CSV]                  Create a csv file
+# -j, --json [JSON]                Create a json file
+# -s, --spreadsheet [SPREADSHEET]  Write to spreadsheet from CSV
+#     --clear_cache [CLEAR_CACHE]  Clear the cache
+#     --simple [SIMPLE]            Display results in a simplified way
 # -------------------------------------------------------------------------
 
 require './getchuya_scraping/command_line_arg.rb'
 require './getchuya_scraping/games.rb'
+require './spreadsheet/spreadsheet.rb'
+require './spreadsheet/spreadsheet_writer.rb'
+
+# GoogleスプレッドシートID
+SPREADSHEET_ID = 'Your Sheet Id'
 
 # Gamesクラスのインスタンスを取得する
 #   Gamesクラスのインスタンスをキャッシュクリア区分、年月の引数に応じて取得する
@@ -36,6 +42,19 @@ def filtering_games(games, title, brand_name, voice_actor)
   games.where.store(:brand_name, brand_name) unless brand_name.empty?
   games.where.store(:voice_actor, voice_actor) unless voice_actor.empty?
   games
+end
+
+# スプレッドシートへCSVファイルから書き込む
+#   更新対象のワークシート（年月のタイトル）を削除し、新しくワークシートへ
+#   CSVファイルから書き込む
+def write_spreadsheet_by_csv(year_month, csv_file)
+  # spreadsheet = SpreadsheetWriter.new('Your Sheet Id')
+  spreadsheet = SpreadsheetWriter.new(SPREADSHEET_ID)
+
+  # 更新対象のワークシートを削除しCSVファイルから書き込みを行なう
+  spreadsheet.delete_worksheet_by_title(year_month)
+  spreadsheet.get_worksheet_by_title_not_exist_create(year_month)
+  spreadsheet.write_by_csv(csv_file)
 end
 
 # URLを開く
@@ -96,16 +115,17 @@ end
 # ---------------------------------
 #  コマンドライン引数を取得する
 # ---------------------------------
-command_line_args  = CommandLineArg.new
-year_month         = command_line_args.get(:year_month)  # 年月
-title              = command_line_args.get(:title)       # 絞り込み用のタイトル
-brand_name         = command_line_args.get(:brand_name)  # 絞り込み用のブランド名
-voice_actor        = command_line_args.get(:voice_actor) # 絞り込み用の声優名
-has_clear_cache    = command_line_args.get(:clear_cache) # キャッシュクリア区分(true:キャッシュをクリアする、false:キャッシュをクリアしない)
-is_simple_display  = command_line_args.get(:simple)      # ゲーム情報を簡略表示する
-is_open            = command_line_args.get(:open)        # ゲーム紹介ページを開くかどうかの区分
-should_create_csv  = command_line_args.get(:csv)         # CSVをファイル作成する
-should_create_json = command_line_args.get(:json)        # jsonファイルを作成する
+command_line_args          = CommandLineArg.new
+year_month                 = command_line_args.get(:year_month)  # 年月
+title                      = command_line_args.get(:title)       # 絞り込み用のタイトル
+brand_name                 = command_line_args.get(:brand_name)  # 絞り込み用のブランド名
+voice_actor                = command_line_args.get(:voice_actor) # 絞り込み用の声優名
+has_clear_cache            = command_line_args.get(:clear_cache) # キャッシュクリア区分(true:キャッシュをクリアする、false:キャッシュをクリアしない)
+is_simple_display          = command_line_args.get(:simple)      # ゲーム情報を簡略表示する
+is_open                    = command_line_args.get(:open)        # ゲーム紹介ページを開くかどうかの区分
+should_create_csv          = command_line_args.get(:csv)         # CSVをファイル作成する
+should_create_json         = command_line_args.get(:json)        # jsonファイルを作成する
+should_writing_spreadsheet = command_line_args.get(:spreadsheet) # スプレッドシートへ書き込みをする
 
 # ---------------------------------
 #  ゲーム情報の取得
@@ -125,6 +145,12 @@ getchuya_games = filtering_games(games, title, brand_name, voice_actor)
 # ---------------------------------
 getchuya_games.create_csv if should_create_csv
 getchuya_games.create_json if should_create_json
+
+# ---------------------------------
+#  スプレッドシートへの書き込み
+# ---------------------------------
+target_year_month = "#{getchuya_games.year}#{getchuya_games.month}"
+write_spreadsheet_by_csv(target_year_month, getchuya_games.csv_file_path) if should_writing_spreadsheet
 
 # ---------------------------------
 #  画面表示
