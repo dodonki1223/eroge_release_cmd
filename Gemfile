@@ -26,4 +26,6 @@ group :development do
   # テストで使う「HTTP通信」を１回目に記録しておいて、２回目以降のテストでの実行時間を短縮し、効率的な
   # テストを支援してくれるGem（「酒と涙とRubyとRailsと」より）
   gem 'vcr'
+  # テストカバレッジを取得
+  gem "simplecov"
 end

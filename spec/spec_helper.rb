@@ -17,7 +17,11 @@
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 
 require 'webmock/rspec'
+require 'simplecov'
 require 'vcr'
+
+# SimpleCovのロード処理
+SimpleCov.start
 
 # Webmock用のデータの作成用設定
 # ※vcrを使用し、簡単に作成する
