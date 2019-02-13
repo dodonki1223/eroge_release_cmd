@@ -59,3 +59,7 @@ Style/BlockComments:
 Metrics/BlockLength:
   Exclude:
     - 'spec/**/*'
+
+# クラスの行数（コメントは除いて）を100→150に変更
+Metrics/ClassLength:
+  Max: 150
