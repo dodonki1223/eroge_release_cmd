@@ -42,9 +42,11 @@ class CommandLineArg
       @options[:json]        = false
       @options[:clear_cache] = false
       @options[:simple]      = false
+      @options[:spreadsheet] = false
       opt.on('-o', '--open [OPEN]', 'Open game page in browser') { @options[:open] = true }
       opt.on('-c', '--csv [CSV]', 'Create a csv file') { @options[:csv] = true }
       opt.on('-j', '--json [JSON]', 'Create a json file') { @options[:json] = true }
+      opt.on('-s', '--spreadsheet [SPREADSHEET]', 'Write to spreadsheet from CSV') { @options[:spreadsheet] = true }
       opt.on('--clear_cache [CLEAR_CACHE]', 'Clear the cache') { @options[:clear_cache] = true }
       opt.on('--simple [SIMPLE]', 'Display results in a simplified way') { @options[:simple] = true }
 

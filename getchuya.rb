@@ -19,6 +19,8 @@
 
 require './getchuya_scraping/command_line_arg.rb'
 require './getchuya_scraping/games.rb'
+require './spreadsheet/spreadsheet.rb'
+require './spreadsheet/spreadsheet_writer.rb'
 
 # Gamesクラスのインスタンスを取得する
 #   Gamesクラスのインスタンスをキャッシュクリア区分、年月の引数に応じて取得する
@@ -96,16 +98,17 @@ end
 # ---------------------------------
 #  コマンドライン引数を取得する
 # ---------------------------------
-command_line_args  = CommandLineArg.new
-year_month         = command_line_args.get(:year_month)  # 年月
-title              = command_line_args.get(:title)       # 絞り込み用のタイトル
-brand_name         = command_line_args.get(:brand_name)  # 絞り込み用のブランド名
-voice_actor        = command_line_args.get(:voice_actor) # 絞り込み用の声優名
-has_clear_cache    = command_line_args.get(:clear_cache) # キャッシュクリア区分(true:キャッシュをクリアする、false:キャッシュをクリアしない)
-is_simple_display  = command_line_args.get(:simple)      # ゲーム情報を簡略表示する
-is_open            = command_line_args.get(:open)        # ゲーム紹介ページを開くかどうかの区分
-should_create_csv  = command_line_args.get(:csv)         # CSVをファイル作成する
-should_create_json = command_line_args.get(:json)        # jsonファイルを作成する
+command_line_args          = CommandLineArg.new
+year_month                 = command_line_args.get(:year_month)  # 年月
+title                      = command_line_args.get(:title)       # 絞り込み用のタイトル
+brand_name                 = command_line_args.get(:brand_name)  # 絞り込み用のブランド名
+voice_actor                = command_line_args.get(:voice_actor) # 絞り込み用の声優名
+has_clear_cache            = command_line_args.get(:clear_cache) # キャッシュクリア区分(true:キャッシュをクリアする、false:キャッシュをクリアしない)
+is_simple_display          = command_line_args.get(:simple)      # ゲーム情報を簡略表示する
+is_open                    = command_line_args.get(:open)        # ゲーム紹介ページを開くかどうかの区分
+should_create_csv          = command_line_args.get(:csv)         # CSVをファイル作成する
+should_create_json         = command_line_args.get(:json)        # jsonファイルを作成する
+should_writing_spreadsheet = command_line_args.get(:spreadsheet) # スプレッドシートへ書き込みをする
 
 # ---------------------------------
 #  ゲーム情報の取得

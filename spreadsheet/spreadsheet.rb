@@ -2,6 +2,7 @@
 
 require 'bundler/setup'
 require 'google_drive'
+require 'csv'
 
 # Googleスプレッドシートクラス
 #   GoogleスプレッドシートのIDを指定してそのIDに一致するGoogleスプレッドシートを
@@ -27,6 +28,23 @@ class Spreadsheet
       puts e.backtrace
       exit
     end
+  end
+
+  # Googleスプレッドシートのワークシートをタイトルから削除する
+  #   ワークシートが見つからなかった場合はメッセージを表示
+  def delete_worksheet_by_title(title)
+    # 削除対象のワークシートを取得
+    target_worksheet = @spreadsheet.worksheet_by_title(title)
+
+    # 削除対象のワークシートが見つからなかった場合はメッセージを表示して処理を終了する
+    if target_worksheet.nil?
+      puts "ワークシート名が「#{title}」のワークシートが見つかりませんでした"
+      puts 'ワークシートの削除が出来ませんでした'
+      return
+    end
+
+    # ワークシートの削除処理を実行
+    target_worksheet.delete
   end
 
   # Googleスプレッドシートのワークシートをタイトルから取得する
