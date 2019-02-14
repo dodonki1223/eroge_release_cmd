@@ -48,13 +48,21 @@ end
 #   更新対象のワークシート（年月のタイトル）を削除し、新しくワークシートへ
 #   CSVファイルから書き込む
 def write_spreadsheet_by_csv(year_month, csv_file)
-  # spreadsheet = SpreadsheetWriter.new('Your Sheet Id')
   spreadsheet = SpreadsheetWriter.new(SPREADSHEET_ID)
 
   # 更新対象のワークシートを削除しCSVファイルから書き込みを行なう
   spreadsheet.delete_worksheet_by_title(year_month)
   spreadsheet.get_worksheet_by_title_not_exist_create(year_month)
   spreadsheet.write_by_csv(csv_file)
+
+  # 書き込みを行ったスプレッドシートを返す
+  spreadsheet
+end
+
+# シェルコマンドの「open」を使用して対象のものを開く
+#   URLを指定された時は規定のブラウザでそのURLを開く
+def system_open(target)
+  system("open #{target}")
 end
 
 # URLを開く
@@ -74,9 +82,9 @@ def open_urls(game_list)
     exit
   end
 
-  # シェルコマンドの「open」を使用してゲームの紹介ページを開く
+  # ゲームの紹介ページを開く
   game_list.each do |game|
-    system("open #{game[:introduction_page]}")
+    system_open(game[:introduction_page])
   end
 end
 
@@ -116,16 +124,17 @@ end
 #  コマンドライン引数を取得する
 # ---------------------------------
 command_line_args          = CommandLineArg.new
-year_month                 = command_line_args.get(:year_month)  # 年月
-title                      = command_line_args.get(:title)       # 絞り込み用のタイトル
-brand_name                 = command_line_args.get(:brand_name)  # 絞り込み用のブランド名
-voice_actor                = command_line_args.get(:voice_actor) # 絞り込み用の声優名
-has_clear_cache            = command_line_args.get(:clear_cache) # キャッシュクリア区分(true:キャッシュをクリアする、false:キャッシュをクリアしない)
-is_simple_display          = command_line_args.get(:simple)      # ゲーム情報を簡略表示する
-is_open                    = command_line_args.get(:open)        # ゲーム紹介ページを開くかどうかの区分
-should_create_csv          = command_line_args.get(:csv)         # CSVをファイル作成する
-should_create_json         = command_line_args.get(:json)        # jsonファイルを作成する
-should_writing_spreadsheet = command_line_args.get(:spreadsheet) # スプレッドシートへ書き込みをする
+year_month                 = command_line_args.get(:year_month)       # 年月
+title                      = command_line_args.get(:title)            # 絞り込み用のタイトル
+brand_name                 = command_line_args.get(:brand_name)       # 絞り込み用のブランド名
+voice_actor                = command_line_args.get(:voice_actor)      # 絞り込み用の声優名
+has_clear_cache            = command_line_args.get(:clear_cache)      # キャッシュクリア区分(true:キャッシュをクリアする、false:キャッシュをクリアしない)
+is_simple_display          = command_line_args.get(:simple)           # ゲーム情報を簡略表示する
+is_open                    = command_line_args.get(:open)             # ゲーム紹介ページを開くかどうかの区分
+should_create_csv          = command_line_args.get(:csv)              # CSVをファイル作成する
+should_create_json         = command_line_args.get(:json)             # jsonファイルを作成する
+should_writing_spreadsheet = command_line_args.get(:spreadsheet)      # スプレッドシートへ書き込みをする
+is_open_spreadsheet        = command_line_args.get(:open_spreadsheet) # スプレッドシートページを開くかどうかの区分
 
 # ---------------------------------
 #  ゲーム情報の取得
@@ -149,8 +158,14 @@ getchuya_games.create_json if should_create_json
 # ---------------------------------
 #  スプレッドシートへの書き込み
 # ---------------------------------
-target_year_month = "#{getchuya_games.year}#{getchuya_games.month}"
-write_spreadsheet_by_csv(target_year_month, getchuya_games.csv_file_path) if should_writing_spreadsheet
+if should_writing_spreadsheet
+  # スプレッドシートへの書き込み処理
+  target_year_month = "#{getchuya_games.year}#{getchuya_games.month}"
+  spreadsheet = write_spreadsheet_by_csv(target_year_month, getchuya_games.csv_file_path)
+
+  # 書き込みを行ったワークシートをブラウザで開く
+  system_open(spreadsheet.worksheet.human_url) if is_open_spreadsheet
+end
 
 # ---------------------------------
 #  画面表示

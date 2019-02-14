@@ -37,16 +37,18 @@ class CommandLineArg
 
       # true、falseを受け取るコマンドライン引数を設定する
       # デフォルト値はすべてfalseとし、受け取ったものにはtrueをセットする
-      @options[:open]        = false
       @options[:csv]         = false
       @options[:json]        = false
+      @options[:open]        = false
+      @options[:spreadsheet] = false
+      @options[:open_spreadsheet] = false
       @options[:clear_cache] = false
       @options[:simple]      = false
-      @options[:spreadsheet] = false
       opt.on('-o', '--open [OPEN]', 'Open game page in browser') { @options[:open] = true }
       opt.on('-c', '--csv [CSV]', 'Create a csv file') { @options[:csv] = true }
       opt.on('-j', '--json [JSON]', 'Create a json file') { @options[:json] = true }
       opt.on('-s', '--spreadsheet [SPREADSHEET]', 'Write to spreadsheet from CSV') { @options[:spreadsheet] = true }
+      opt.on('--open_spreadsheet [OPEN_SPREADSHEET]', 'Open spreadsheet page in browser') { @options[:open_spreadsheet] = true }
       opt.on('--clear_cache [CLEAR_CACHE]', 'Clear the cache') { @options[:clear_cache] = true }
       opt.on('--simple [SIMPLE]', 'Display results in a simplified way') { @options[:simple] = true }
 

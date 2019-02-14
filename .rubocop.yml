@@ -57,6 +57,7 @@ Style/BlockComments:
 # ブロックの長さの制限をRspecは除外する
 # ※RspecはDSLのため１つのブロックで行数が増えてしまうのはしょうがないため
 Metrics/BlockLength:
+  Max: 30
   Exclude:
     - 'spec/**/*'
 
