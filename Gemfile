@@ -27,5 +27,5 @@ group :development do
   # テストを支援してくれるGem（「酒と涙とRubyとRailsと」より）
   gem 'vcr'
   # テストカバレッジを取得
-  gem "simplecov"
+  gem 'simplecov'
 end
