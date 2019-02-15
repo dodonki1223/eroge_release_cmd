@@ -57,5 +57,10 @@ Style/BlockComments:
 # ブロックの長さの制限をRspecは除外する
 # ※RspecはDSLのため１つのブロックで行数が増えてしまうのはしょうがないため
 Metrics/BlockLength:
+  Max: 30
   Exclude:
     - 'spec/**/*'
+
+# クラスの行数（コメントは除いて）を100→150に変更
+Metrics/ClassLength:
+  Max: 150

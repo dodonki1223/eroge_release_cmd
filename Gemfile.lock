@@ -9,6 +9,7 @@ GEM
     declarative (0.0.10)
     declarative-option (0.1.0)
     diff-lcs (1.3)
+    docile (1.3.1)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
     google-api-client (0.25.0)
@@ -33,6 +34,7 @@ GEM
     hashdiff (0.3.8)
     httpclient (2.8.3)
     jaro_winkler (1.5.2)
+    json (2.1.0)
     jwt (2.1.0)
     memoist (0.16.0)
     mime-types (3.2.2)
@@ -85,6 +87,11 @@ GEM
       faraday (~> 0.9)
       jwt (>= 1.5, < 3.0)
       multi_json (~> 1.10)
+    simplecov (0.16.1)
+      docile (~> 1.1)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.2)
     uber (0.1.0)
     unicode-display_width (1.4.1)
     vcr (4.0.0)
@@ -102,6 +109,7 @@ DEPENDENCIES
   rspec (>= 3.8.0)
   rubocop (~> 0.62)
   rubocop-rspec
+  simplecov
   vcr
   webmock
 

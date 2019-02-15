@@ -23,5 +23,8 @@ getchuya_scraping/created
 # vcrが作成するファイルの除外
 /spec/vcr
 
-# config.jsonの除外設定
+# google_drive_config.jsonの除外設定（Googleスプレッドシートの設定）
 /spreadsheet/google_drive_config.json
+
+# SimpleCovが作成するファイルの除外
+/coverage
