@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
+require './getchuya_scraping/getchuya_scraping.rb'
 require './getchuya_scraping/release_list_scraping.rb'
 require './getchuya_scraping/introduction_page_scraping.rb'
-require './getchuya_scraping/getchuya_scraping.rb'
+require './getchuya_scraping/cache.rb'
 require './getchuya_scraping/extended_string'
 require 'json'
 require 'csv'
@@ -11,12 +12,11 @@ require 'csv'
 # 発売リストページ、ゲーム紹介ページからスクレイピングした結果を保持
 # する。その情報を加工・検索してデータを取得することができる
 class Games
-  attr_accessor :games, :year_month, :year, :month, :cache_file, :release_list, :where
+  attr_accessor :where
+  attr_reader :games, :year_month, :year, :month, :release_list, :cache
 
   # 作成ファイルが格納されるディレクトリ
   CREATED_PATH = "#{__dir__}/created/"
-  # キャッシュファイルが格納されるディレクトリ
-  CACHE_PATH = "#{__dir__}/cache/"
   # CSV用のヘッダーカラム情報
   HEADER_COLUMNS = %w[id release_date title package_image price introduction_page brand_name brand_page voice_actor].freeze
 
@@ -30,18 +30,16 @@ class Games
     @year         = release_list.year
     @month        = release_list.month
 
-    # キャッシュファイルのパス名を作成
     # キャッシュクリアの時はキャッシュをクリアする
-    @cache_file = get_file_path(CACHE_PATH, "#{@year}#{@month}")
-    clear_cache(@cache_file) if cleared_cache
+    @cache = Cache.new("#{@year}#{@month}")
+    @cache.clear_cache if cleared_cache
 
     # ゲーム情報をセットする（げっちゅ屋よりスクレイピングして取得する）
-    @games = get_games(cache_file)
+    @games = get_games
 
     # キャッシャファイルが存在しない時、キャッシュフォルダへキャッシュ
     # ファイル（ゲーム情報をシリアライズしたもの）を作成する
-    # ※ファイル名は「YYYYMM」の形式とする
-    create_cache(@cache_file, @games) unless cached?(cache_file)
+    @cache.create_cache(@games) unless @cache.cached?
 
     # 年月情報をセットする
     @year_month = "#{@year}年#{@month}月"
@@ -61,7 +59,7 @@ class Games
 
   # jsonファイルへのフルパスを取得する
   def json_file_path
-    get_file_path(CREATED_PATH, "#{@year}#{@month}.json")
+    CREATED_PATH + "#{@year}#{@month}.json"
   end
 
   # jsonファイルを作成する
@@ -72,7 +70,7 @@ class Games
 
   # CSVファイルへのフルパスを取得する
   def csv_file_path
-    get_file_path(CREATED_PATH, "#{@year}#{@month}.csv")
+    CREATED_PATH + "#{@year}#{@month}.csv"
   end
 
   # CSVファイルを作成する
@@ -103,9 +101,9 @@ class Games
   #   キャッシュファイルが存在する時はキャッシュファイルから読み込んで取得する
   #   キャッシュファイルが存在しない時はゲーム情報をげっちゅ屋からスクレイピン
   #   グして取得する。インスタンス変数のgames、year、monthに値をセットする
-  def get_games(cache_file)
+  def get_games
     # キャッシュファイルが存在する時はスクレイピングを行わずキャッシュファイルから読み込む
-    return load_cache(cache_file) if cached?(cache_file)
+    return @cache.load_cache if @cache.cached?
 
     # げっちゅ屋の「月発売タイトル一覧・ゲーム」の一覧をスクレイピングして取得する
     release_list = @release_list.scraping
@@ -147,17 +145,6 @@ class Games
     filtering_games
   end
 
-  # ファイルのパス（フルパス）を取得する
-  #   ファイルのパスは「作成ファイルパス」、「キャッシュファイルパス」のみなの
-  #   でそれ以外を指定した時は例外を投げる
-  def get_file_path(directory, file_name)
-    unless [CREATED_PATH, CACHE_PATH].include?(directory)
-      raise ArgumentError, 'CREATED_PATH、CACHE_PATHのどちらかを必ず指定して下さい'
-    end
-
-    directory + file_name
-  end
-
   # ファイルを作成する
   #   対象のパスへcontentの内容を書き込む(文字列)。対象のパスに同名のファイ
   #   ルが存在した場合は中身が破棄され、今回の書き込み内容に上書きされる。
@@ -168,36 +155,5 @@ class Games
     # ※ブロックを指定して呼び出した場合はブロックの実行が終了すると、ファイルは自動的にクローズされる
     #   LFはそのままLFとして書き込まれる
     File.open(path, 'wb') { |file| file.puts content }
-  end
-
-  # キャッシュファイルを作成する
-  #   シリアライズしたものをキャッシュファイルとして保存する
-  def create_cache(path, content)
-    File.open(path, 'wb') do |file|
-      serialize_file = Marshal.dump(content)
-      file.puts(serialize_file)
-    end
-  end
-
-  # キャッシュファイルを読み込む
-  #   シリアライズされたキャッシュファイルをデシリアライズして読み込む
-  def load_cache(cache_file)
-    deserialize_file = ''
-    File.open(cache_file, 'r') { |file| deserialize_file = file.read }
-    Marshal.load(deserialize_file)
-  end
-
-  # キャッシュファイルが存在するか？
-  def cached?(cache_file)
-    File.exist?(cache_file)
-  end
-
-  # キャッシュファイルをクリアする
-  #   キャッシュファイルを削除する。削除対象のキャッシュファイルが
-  #   存在しない場合は何も行わない
-  def clear_cache(cache_file)
-    File.delete(cache_file) if cached?(cache_file)
-  rescue StandardError => e
-    raise e.class, 'キャッシュファイルの削除に失敗しました'
   end
 end
