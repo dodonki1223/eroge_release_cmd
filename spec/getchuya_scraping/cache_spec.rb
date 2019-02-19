@@ -27,7 +27,7 @@ describe Cache do
 
       # Fileクラスのopenを偽装する
       string_io = StringIO.new
-      #「allow(実装を置き換えたいオブジェクト).to receive(置き換えたいメソッド名).and_return(返却したい値やオブジェクト)」
+      # 「allow(実装を置き換えたいオブジェクト).to receive(置き換えたいメソッド名).and_return(返却したい値やオブジェクト)」
       # の形式で記述が出来る
       allow(File).to receive(:open).and_yield(string_io)
       cache.create_cache('Hello World!!')
@@ -49,6 +49,19 @@ describe Cache do
       allow(File).to receive(:open).and_yield(string_io)
 
       expect(cache.load_cache).to eq 'Hello World!!'
+    end
+  end
+
+  describe '.clear_cache' do
+    let(:cache) { described_class.new('203001') }
+
+    it 'ファイルの削除に失敗した時、例外が発生すること' do
+      # Fileクラスのexist?がtrueを返すように偽装する
+      allow(File).to receive(:exist?).and_return(true)
+      # FileクラスのdeleteがStandardErrorを返すように偽装する
+      allow(File).to receive(:delete).and_raise(StandardError)
+
+      expect { cache.clear_cache }.to raise_error(StandardError, 'キャッシュファイルの削除に失敗しました')
     end
   end
 end
