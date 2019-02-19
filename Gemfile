@@ -28,6 +28,4 @@ group :development do
   gem 'vcr'
   # テストカバレッジを取得
   gem 'simplecov'
-  # ファイルシステム操作に関連するクラスのモックオブジェクトを提供する
-  gem 'fakefs'
 end
