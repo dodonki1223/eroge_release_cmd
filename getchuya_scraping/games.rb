@@ -40,7 +40,6 @@ class Games
     # キャッシャファイルが存在しない時、キャッシュフォルダへキャッシュ
     # ファイル（ゲーム情報をシリアライズしたもの）を作成する
     @cache.create_cache(@games) unless @cache.cached?
-    puts @cache.create_cache(@games)
 
     # 年月情報をセットする
     @year_month = "#{@year}年#{@month}月"
