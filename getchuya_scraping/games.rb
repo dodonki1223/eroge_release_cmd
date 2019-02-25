@@ -35,7 +35,7 @@ class Games
     @cache.clear_cache if cleared_cache
 
     # ゲーム情報をセットする（げっちゅ屋よりスクレイピングして取得する）
-    @games = get_games
+    @games = create_games
 
     # キャッシャファイルが存在しない時、キャッシュフォルダへキャッシュ
     # ファイル（ゲーム情報をシリアライズしたもの）を作成する
@@ -43,6 +43,9 @@ class Games
 
     # 年月情報をセットする
     @year_month = "#{@year}年#{@month}月"
+
+    # 絞り込み条件を初期化
+    @where = {}
   end
 
   # ゲーム情報を取得する
@@ -97,11 +100,11 @@ class Games
 
   private
 
-  # ゲーム情報を取得する
+  # ゲーム情報を作成する
   #   キャッシュファイルが存在する時はキャッシュファイルから読み込んで取得する
   #   キャッシュファイルが存在しない時はゲーム情報をげっちゅ屋からスクレイピン
   #   グして取得する。インスタンス変数のgames、year、monthに値をセットする
-  def get_games
+  def create_games
     # キャッシュファイルが存在する時はスクレイピングを行わずキャッシュファイルから読み込む
     return @cache.load_cache if @cache.cached?
 

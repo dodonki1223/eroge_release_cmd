@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require './spec/spec_helper'
-require './getchuya_scraping/getchuya_scraping'
+require './spec/spec_helper.rb'
+require './getchuya_scraping/getchuya_scraping.rb'
 
 describe GetchuyaScraping do
   describe '.create_uri' do

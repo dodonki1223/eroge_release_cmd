@@ -64,3 +64,7 @@ Metrics/BlockLength:
 # クラスの行数（コメントは除いて）を100→150に変更
 Metrics/ClassLength:
   Max: 150
+
+# Rspec句のitの行数を５→１０に変更
+RSpec/ExampleLength:
+  Max: 10
