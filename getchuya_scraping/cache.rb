@@ -21,7 +21,9 @@ class Cache
   def create_cache(content)
     File.open(@full_path, 'wb') do |file|
       serialize_file = Marshal.dump(content)
-      file.puts(serialize_file)
+      # 改行なしで書き込む
+      # ※putsを使用した場合、末尾に改行がつく
+      file.print(serialize_file)
     end
   end
 
