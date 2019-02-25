@@ -43,6 +43,9 @@ class Games
 
     # 年月情報をセットする
     @year_month = "#{@year}年#{@month}月"
+
+    # 絞り込み条件を初期化
+    @where = {}
   end
 
   # ゲーム情報を取得する

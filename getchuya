@@ -38,7 +38,6 @@ end
 # ゲーム情報を絞り込む
 #   タイトル、ブランド名、声優名で絞り込む
 def filtering_games(games, title, brand_name, voice_actor)
-  games.where = {}
   games.where.store(:title, title) unless title.empty?
   games.where.store(:brand_name, brand_name) unless brand_name.empty?
   games.where.store(:voice_actor, voice_actor) unless voice_actor.empty?
