@@ -68,3 +68,17 @@ Metrics/ClassLength:
 # Rspec句のitの行数を５→１０に変更
 RSpec/ExampleLength:
   Max: 10
+
+# 入れ子になったexampleの階層を３→４に変更
+RSpec/NestedGroups:
+  Max: 4
+
+# Rspec内のインスタンス変数（@hogeなど）の使用を許可する
+# スクレイピングのソースで使用した方が効率が良いためである
+RSpec/InstanceVariable:
+  Enabled: false
+
+# allow_any_instance_ofの使用を許可する
+# ※あまり良くないがrubocop内のソースでも使用されているため
+RSpec/AnyInstance:
+  Enabled: false

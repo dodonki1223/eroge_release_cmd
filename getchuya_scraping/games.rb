@@ -48,6 +48,14 @@ class Games
     @where = {}
   end
 
+  # ゲーム情報の絞り込み条件をセットする
+  #   symbolには「id,release_date,title,package_image,price,introduction_page,
+  #   brand_name,brand_page,voice_actor」を指定してください
+  #   ※contentには配列も指定できます
+  def set_search_condition(symbol, content)
+    @where.store(symbol.to_sym, content) unless content.empty?
+  end
+
   # ゲーム情報を取得する
   #   ゲーム情報を絞り込んだ状態で取得する
   def game_list
