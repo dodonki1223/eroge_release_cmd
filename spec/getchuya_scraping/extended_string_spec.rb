@@ -4,7 +4,7 @@ require './spec/spec_helper'
 require './getchuya_scraping/extended_string'
 
 describe String do
-  describe '.multiple_include?' do
+  describe '#multiple_include?' do
     let(:true_result_not_array) { 'Hello World!!'.multiple_include?('llo') }
     let(:false_result_not_array) { 'Hello World!!'.multiple_include?('aaaa') }
     let(:true_result_array) { 'Hello World!!'.multiple_include?(%w[World Hello aaaaa]) }

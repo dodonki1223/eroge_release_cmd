@@ -12,7 +12,7 @@ describe Games do
   TARGET_YEAR_MONTH = '201902'
 
   context 'when initialize process' do
-    describe '.initialize' do
+    describe '#initialize' do
       context 'when a cache file exists' do
         before do
           create_cache_mock(true, TARGET_YEAR_MONTH)
@@ -51,7 +51,7 @@ describe Games do
       @games
     end
 
-    describe '.set_search_condition' do
+    describe '#set_search_condition' do
       let!(:title) do
         games.set_search_condition('title', 'タイトル')
         games.where[:title]
@@ -70,7 +70,7 @@ describe Games do
       it { expect(voice_actor).to eq %w[１人目 ２人目] }
     end
 
-    describe '.game_list' do
+    describe '#game_list' do
       let(:filtering_title) do
         games.set_search_condition('title', '金色')
         games.game_list
@@ -98,7 +98,7 @@ describe Games do
       it { expect(filtering_nothing.count).to eq(69) }
     end
 
-    describe '.to_json' do
+    describe '#to_json' do
       let!(:json) do
         games.set_search_condition('voice_actor', %w[遥そら 風音])
         JSON.parse(games.to_json)
@@ -112,13 +112,13 @@ describe Games do
       it { expect(voice_actor_includes).to be_truthy }
     end
 
-    describe '.json_file_path' do
+    describe '#json_file_path' do
       subject { "#{Games::CREATED_PATH}#{games.year}#{games.month}.json" }
 
       it { is_expected.to eq games.json_file_path }
     end
 
-    describe '.create_json' do
+    describe '#create_json' do
       let(:to_json) do
         games.set_search_condition('voice_actor', %w[遥そら 風音])
         StringIO.new(games.to_json)
@@ -133,13 +133,13 @@ describe Games do
       it { expect(json[3]['brand_name']).to eq 'SAGA PLANETS' }
     end
 
-    describe '.csv_file_path' do
+    describe '#csv_file_path' do
       subject { "#{Games::CREATED_PATH}#{games.year}#{games.month}.csv" }
 
       it { is_expected.to eq games.csv_file_path }
     end
 
-    describe '.create_csv' do
+    describe '#create_csv' do
       let(:string_io) { StringIO.new }
       let(:csv_content) { string_io.read.scan(/\[.*?\]/) }
       let(:header) { csv_content[0] }

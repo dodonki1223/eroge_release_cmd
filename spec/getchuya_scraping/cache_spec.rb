@@ -4,7 +4,7 @@ require './spec/spec_helper'
 require './getchuya_scraping/cache'
 
 describe Cache do
-  describe '.create_cache' do
+  describe '#create_cache' do
     let(:cache) { described_class.new('203001') }
 
     it '書き込まれる内容がシリアライズされたものになること' do
@@ -36,7 +36,7 @@ describe Cache do
     end
   end
 
-  describe '.load_cache' do
+  describe '#load_cache' do
     let(:cache) { described_class.new('203001') }
 
     it '読み取る内容がデシリアライズされたものであること' do
@@ -52,7 +52,7 @@ describe Cache do
     end
   end
 
-  describe '.clear_cache' do
+  describe '#clear_cache' do
     let(:cache) { described_class.new('203001') }
 
     it 'ファイルの削除に失敗した時、例外が発生すること' do

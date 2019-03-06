@@ -6,7 +6,7 @@ require './getchuya_scraping/release_list_scraping.rb'
 describe ReleaseListScraping do
   let!(:release_list_scraping) { described_class.new('201903') }
 
-  describe '.scraping' do
+  describe '#scraping' do
     let(:release_list) do
       VCR.use_cassette 'release_list_scraping_release_list' do
         release_list_scraping.scraping
