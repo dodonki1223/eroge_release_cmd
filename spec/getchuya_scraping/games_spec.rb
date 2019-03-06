@@ -43,12 +43,18 @@ describe Games do
   end
 
   context 'when not initialize process' do
+    # let!(:games) do
+    #   create_cache_mock(false, TARGET_YEAR_MONTH)
+    #   VCR.use_cassette 'game_list' do
+    #     @games = described_class.new(true, TARGET_YEAR_MONTH)
+    #   end
+    #   @games
+    # end
     let!(:games) do
       create_cache_mock(false, TARGET_YEAR_MONTH)
       VCR.use_cassette 'game_list' do
-        @games = described_class.new(true, TARGET_YEAR_MONTH)
+        described_class.new(true, TARGET_YEAR_MONTH)
       end
-      @games
     end
 
     describe '#set_search_condition' do
