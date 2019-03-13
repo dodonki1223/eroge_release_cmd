@@ -8,7 +8,7 @@ describe IntroductionPageScraping do
 
   describe '#scraping' do
     let(:game_info) do
-      VCR.use_cassette 'introduction_page_scraping_game_info' do
+      VCR.use_cassette 'game_info' do
         introduction_page_scraping.scraping
       end
     end

@@ -77,3 +77,10 @@ RSpec/NestedGroups:
 # ※あまり良くないがrubocop内のソースでも使用されているため
 RSpec/AnyInstance:
   Enabled: false
+
+# 標準出力のテストをする時はoutputを使用するのが筋だが除外しているファイルは
+# テスト用のものでは無くRspecを実行した時、標準出力されないようにするためのも
+# のなので除外する
+RSpec/ExpectOutput:
+  Exclude:
+    - 'spec/support/cli_spec_behavior.rb'
