@@ -6,9 +6,9 @@ require './getchuya_scraping/introduction_page_scraping.rb'
 describe IntroductionPageScraping do
   let!(:introduction_page_scraping) { described_class.new('1004515') }
 
-  describe '.scraping' do
+  describe '#scraping' do
     let(:game_info) do
-      VCR.use_cassette 'introduction_page_scraping_game_info' do
+      VCR.use_cassette 'game_info' do
         introduction_page_scraping.scraping
       end
     end

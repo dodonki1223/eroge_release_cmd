@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# Cacheクラスのヘルパーモジュール
+# CacheのMockの機能を提供します
 module CacheHelper
   # CacheクラスのMockを作成する
   #   キャッシュファイルの作成しない、読み込まない、クリアしないものを作成する

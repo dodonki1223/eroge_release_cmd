@@ -10,9 +10,12 @@ require './getchuya_scraping/introduction_page_scraping'
 describe Games do
   include CacheHelper
   TARGET_YEAR_MONTH = '201902'
+  VOICE_ACTOR_CONDITION = %w[遥そら 風音].freeze
+  BRAND_NAME_CONDITION = 'SAGA PLANETS'
+  TITLE_CONDITION = '金色ラブリッチェ'
 
   context 'when initialize process' do
-    describe '.initialize' do
+    describe '#initialize' do
       context 'when a cache file exists' do
         before do
           create_cache_mock(true, TARGET_YEAR_MONTH)
@@ -46,65 +49,64 @@ describe Games do
     let!(:games) do
       create_cache_mock(false, TARGET_YEAR_MONTH)
       VCR.use_cassette 'game_list' do
-        @games = described_class.new(true, TARGET_YEAR_MONTH)
+        described_class.new(true, TARGET_YEAR_MONTH)
       end
-      @games
     end
 
-    describe '.set_search_condition' do
+    describe '#set_search_condition' do
       let!(:title) do
-        games.set_search_condition('title', 'タイトル')
+        games.set_search_condition('title', TITLE_CONDITION)
         games.where[:title]
       end
       let!(:brand_name) do
-        games.set_search_condition('brand_name', 'ブランド名')
+        games.set_search_condition('brand_name', BRAND_NAME_CONDITION)
         games.where[:brand_name]
       end
       let!(:voice_actor) do
-        games.set_search_condition('voice_actor', %w[１人目 ２人目])
+        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
         games.where[:voice_actor]
       end
 
-      it { expect(title).to eq 'タイトル' }
-      it { expect(brand_name).to eq 'ブランド名' }
-      it { expect(voice_actor).to eq %w[１人目 ２人目] }
+      it { expect(title).to eq TITLE_CONDITION }
+      it { expect(brand_name).to eq BRAND_NAME_CONDITION }
+      it { expect(voice_actor).to eq VOICE_ACTOR_CONDITION }
     end
 
-    describe '.game_list' do
+    describe '#game_list' do
       let(:filtering_title) do
-        games.set_search_condition('title', '金色')
+        games.set_search_condition('title', TITLE_CONDITION)
         games.game_list
       end
       let(:filtering_brand) do
-        games.set_search_condition('brand_name', 'SAGA PLANETS')
+        games.set_search_condition('brand_name', BRAND_NAME_CONDITION)
         games.game_list
       end
       let(:filtering_voice_actor) do
-        games.set_search_condition('voice_actor', %w[遥そら 風音])
+        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
         games.game_list
       end
       let(:filtering_all) do
-        games.set_search_condition('title', '金色')
-        games.set_search_condition('brand_name', 'SAGA PLANETS')
-        games.set_search_condition('voice_actor', %w[遥そら 風音])
+        games.set_search_condition('title', TITLE_CONDITION)
+        games.set_search_condition('brand_name', BRAND_NAME_CONDITION)
+        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
         games.game_list
       end
       let(:filtering_nothing) { games.game_list }
 
-      it { expect(filtering_title.count).to eq(5) }
+      it { expect(filtering_title.count).to eq(1) }
       it { expect(filtering_brand.count).to eq(1) }
       it { expect(filtering_voice_actor.count).to eq(4) }
       it { expect(filtering_all.count).to eq(1) }
       it { expect(filtering_nothing.count).to eq(69) }
     end
 
-    describe '.to_json' do
+    describe '#to_json' do
       let!(:json) do
-        games.set_search_condition('voice_actor', %w[遥そら 風音])
+        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
         JSON.parse(games.to_json)
       end
-      let(:brand_name_includes) { json[3]['brand_name'] == 'SAGA PLANETS' }
-      let(:title_includes) { json[3]['title'].include?('金色ラブリッチェ-Golden Time-') }
+      let(:brand_name_includes) { json[3]['brand_name'] == BRAND_NAME_CONDITION }
+      let(:title_includes) { json[3]['title'].include?(TITLE_CONDITION) }
       let(:voice_actor_includes) { json[3]['voice_actor'].include?('遥そら') }
 
       it { expect(brand_name_includes).to be_truthy }
@@ -112,15 +114,15 @@ describe Games do
       it { expect(voice_actor_includes).to be_truthy }
     end
 
-    describe '.json_file_path' do
+    describe '#json_file_path' do
       subject { "#{Games::CREATED_PATH}#{games.year}#{games.month}.json" }
 
       it { is_expected.to eq games.json_file_path }
     end
 
-    describe '.create_json' do
+    describe '#create_json' do
       let(:to_json) do
-        games.set_search_condition('voice_actor', %w[遥そら 風音])
+        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
         StringIO.new(games.to_json)
       end
       let(:json) { JSON.parse(to_json.string) }
@@ -130,25 +132,25 @@ describe Games do
         games.create_json
       end
 
-      it { expect(json[3]['brand_name']).to eq 'SAGA PLANETS' }
+      it { expect(json[3]['brand_name']).to eq BRAND_NAME_CONDITION }
     end
 
-    describe '.csv_file_path' do
+    describe '#csv_file_path' do
       subject { "#{Games::CREATED_PATH}#{games.year}#{games.month}.csv" }
 
       it { is_expected.to eq games.csv_file_path }
     end
 
-    describe '.create_csv' do
+    describe '#create_csv' do
       let(:string_io) { StringIO.new }
       let(:csv_content) { string_io.read.scan(/\[.*?\]/) }
       let(:header) { csv_content[0] }
-      let(:exists_brand_name) { csv_content[4].include?('SAGA PLANETS') }
+      let(:exists_brand_name) { csv_content[4].include?(BRAND_NAME_CONDITION) }
       let(:exists_voice_actor) { csv_content[4].include?('遥そら') }
 
       before do
         allow(CSV).to receive(:open).and_yield(string_io)
-        games.set_search_condition('voice_actor', %w[遥そら 風音])
+        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
         games.create_csv
         string_io.rewind
       end
