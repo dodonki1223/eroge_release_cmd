@@ -23,10 +23,8 @@ class Spreadsheet
     begin
       @spreadsheet = @session.spreadsheet_by_key(spreadsheet_id)
     rescue Google::Apis::ClientError => e
-      # 例外メッセージとバックトレースを表示して処理を終了する
       puts "指定されたIDのスプレッドシートが見つかりませんでした\n#{e.message}(#{e.class})"
-      puts e.backtrace
-      exit
+      raise
     end
   end
 

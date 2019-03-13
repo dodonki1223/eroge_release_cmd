@@ -4,6 +4,9 @@ require './spec/spec_helper.rb'
 require './getchuya_scraping/getchuya_scraping.rb'
 
 describe GetchuyaScraping do
+  URI_GETCHUYA = 'www.getchu.com'
+  URI_GAME_LIST_201902 = '/all/price.html?genre=pc_soft&year=2019&month=2&gage=&gall=all'
+
   describe '.create_uri' do
     let(:not_exists_url_param) { described_class.create_uri('https://hogehoge') }
     let(:exist_url_param) { described_class.create_uri('https://hogehoge', [%w[genre pc_soft], %w[gall all]]) }
@@ -28,13 +31,13 @@ describe GetchuyaScraping do
   end
 
   describe '.parsed_html_for_uri' do
-    let(:list_201902) do
-      VCR.use_cassette 'list_201902' do
-        http = Net::HTTP.new('www.getchu.com')
-        http.get('/all/price.html?genre=pc_soft&year=2019&month=2&gage=&gall=all', Cookie: GetchuyaScraping::COOKIE_OPTION)
+    let(:release_list) do
+      VCR.use_cassette 'release_list_201902' do
+        http = Net::HTTP.new(URI_GETCHUYA)
+        http.get(URI_GAME_LIST_201902, Cookie: GetchuyaScraping::COOKIE_OPTION)
       end
     end
 
-    it { expect(list_201902.code).to eq '200' }
+    it { expect(release_list.code).to eq '200' }
   end
 end
