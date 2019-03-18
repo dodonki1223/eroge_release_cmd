@@ -7,6 +7,7 @@ require './spreadsheet/spreadsheet'
 
 describe Spreadsheet do
   include SpreadsheetHelper
+
   describe '#initialize' do
     include_context 'when disable standard output'
     let(:spreadsheet) { described_class.new('hoge') }
@@ -20,7 +21,7 @@ describe Spreadsheet do
     let(:worksheet) { spreadsheet.delete_worksheet_by_title('hoge') }
 
     it 'ワークシートが見つからず何も処理がされないこと' do
-      spreadsheet_mock = create_spreadsheet_mock(worksheet_by_title: nil, add_worksheet: '')
+      spreadsheet_mock = create_spreadsheet_mock(worksheet_by_title: nil)
       create_session_mock(spreadsheet_mock)
 
       expect(worksheet).to be_nil
@@ -29,7 +30,7 @@ describe Spreadsheet do
     it 'ワークシートが削除されること' do
       worksheet_mock = instance_double(GoogleDrive::Worksheet)
       allow(worksheet_mock).to receive(:delete).and_return('run delete')
-      spreadsheet_mock = create_spreadsheet_mock(worksheet_by_title: worksheet_mock, add_worksheet: '')
+      spreadsheet_mock = create_spreadsheet_mock(worksheet_by_title: worksheet_mock)
       create_session_mock(spreadsheet_mock)
 
       expect(worksheet).to eq 'run delete'
@@ -52,7 +53,7 @@ describe Spreadsheet do
     context 'when a worksheet exists' do
       it '対象のワークシートが取得されること' do
         worksheet_mock = instance_double(GoogleDrive::Worksheet)
-        spreadsheet_mock = create_spreadsheet_mock(worksheet_by_title: worksheet_mock, add_worksheet: '')
+        spreadsheet_mock = create_spreadsheet_mock(worksheet_by_title: worksheet_mock)
         create_session_mock(spreadsheet_mock)
 
         expect(result).to eq worksheet_mock
