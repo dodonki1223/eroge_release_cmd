@@ -4,15 +4,16 @@ require './spec/spec_helper.rb'
 require './getchuya_scraping/getchuya_scraping.rb'
 
 describe GetchuyaScraping do
-  URI_GETCHUYA = 'www.getchu.com'
-  URI_GAME_LIST_201902 = '/all/price.html?genre=pc_soft&year=2019&month=2&gage=&gall=all'
+  let(:uri_getchuya) { 'www.getchu.com' }
+  let(:uri_game_list_201902) { '/all/price.html?genre=pc_soft&year=2019&month=2&gage=&gall=all' }
+  let(:test_uri) { 'https://hogehoge' }
 
   describe '.create_uri' do
-    let(:not_exists_url_param) { described_class.create_uri('https://hogehoge') }
-    let(:exist_url_param) { described_class.create_uri('https://hogehoge', [%w[genre pc_soft], %w[gall all]]) }
+    let(:not_exists_url_param) { described_class.create_uri(test_uri) }
+    let(:exist_url_param) { described_class.create_uri(test_uri, [%w[genre pc_soft], %w[gall all]]) }
 
-    it { expect(not_exists_url_param).to match('https://hogehoge') }
-    it { expect(exist_url_param).to match('https://hogehoge?genre=pc_soft&gall=all') }
+    it { expect(not_exists_url_param).to match(test_uri) }
+    it { expect(exist_url_param).to match("#{test_uri}?genre=pc_soft&gall=all") }
   end
 
   describe '.robots' do
@@ -33,8 +34,8 @@ describe GetchuyaScraping do
   describe '.parsed_html_for_uri' do
     let(:release_list) do
       VCR.use_cassette 'release_list_201902' do
-        http = Net::HTTP.new(URI_GETCHUYA)
-        http.get(URI_GAME_LIST_201902, Cookie: GetchuyaScraping::COOKIE_OPTION)
+        http = Net::HTTP.new(uri_getchuya)
+        http.get(uri_game_list_201902, Cookie: GetchuyaScraping::COOKIE_OPTION)
       end
     end
 

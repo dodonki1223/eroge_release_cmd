@@ -4,9 +4,10 @@ require './spec/spec_helper'
 require './getchuya_scraping/cache'
 
 describe Cache do
-  describe '#create_cache' do
-    let(:cache) { described_class.new('203001') }
+  let(:target_yaer_month) { '203001' }
+  let(:cache) { described_class.new(target_yaer_month) }
 
+  describe '#create_cache' do
     it '書き込まれる内容がシリアライズされたものになること' do
       # -------------------------------------------
       # メソッドをすべてMockする書き方
@@ -20,7 +21,7 @@ describe Cache do
       # allow(cache_mock).to receive(:create_cache).and_return(string_io.read)
       #
       # # Cacheクラスのcreate_cacheメソッドがCacheクラスのMockのcreate_cacheメソッドを返すよう設定
-      # cache = described_class.new('203001')
+      # cache = described_class.new(target_yaer_month)
       # allow(cache).to receive(:create_cache).and_return(cache_mock.create_cache('Hello World!!'))
       #
       # expect(cache.create_cache('Hello World!!')).to eq Marshal.dump('Hello World!!')
@@ -37,8 +38,6 @@ describe Cache do
   end
 
   describe '#load_cache' do
-    let(:cache) { described_class.new('203001') }
-
     it '読み取る内容がデシリアライズされたものであること' do
       # Fileクラスのopenを偽装する
       serialize_content = Marshal.dump('Hello World!!')
@@ -53,8 +52,6 @@ describe Cache do
   end
 
   describe '#clear_cache' do
-    let(:cache) { described_class.new('203001') }
-
     it 'ファイルの削除に失敗した時、例外が発生すること' do
       # Fileクラスのexist?がtrueを返すように偽装する
       allow(File).to receive(:exist?).and_return(true)

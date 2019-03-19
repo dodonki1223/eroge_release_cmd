@@ -4,7 +4,8 @@ require './spec/spec_helper'
 require './getchuya_scraping/introduction_page_scraping.rb'
 
 describe IntroductionPageScraping do
-  let!(:introduction_page_scraping) { described_class.new('1004515') }
+  let(:game_id) { '1004515' }
+  let!(:introduction_page_scraping) { described_class.new(game_id) }
 
   describe '#scraping' do
     let(:game_info) do
