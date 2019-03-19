@@ -9,20 +9,24 @@ require './getchuya_scraping/introduction_page_scraping'
 
 describe Games do
   include CacheHelper
-  TARGET_YEAR_MONTH = '201902'
-  VOICE_ACTOR_CONDITION = %w[遥そら 風音].freeze
-  BRAND_NAME_CONDITION = 'SAGA PLANETS'
-  TITLE_CONDITION = '金色ラブリッチェ'
+
+  # 元々は定数で記述していたが「warning: already initialized constant ????」と
+  # 警告が出るため、letで代用する
+  # ※同じ定数名を他でも使用すると値が上書かれてしまう
+  let(:target_year_month) { '201902' }
+  let(:voice_actor_condition) { %w[遥そら 風音].freeze }
+  let(:brand_name_condition) { 'SAGA PLANETS' }
+  let(:title_condition) { '金色ラブリッチェ' }
 
   context 'when initialize process' do
     describe '#initialize' do
       context 'when a cache file exists' do
         before do
-          create_cache_mock(true, TARGET_YEAR_MONTH)
+          create_cache_mock(true, target_year_month)
         end
 
-        let(:execute_clear_cache) { described_class.new(true, TARGET_YEAR_MONTH).cache }
-        let(:not_execute_clear_cache) { described_class.new(false, TARGET_YEAR_MONTH).cache }
+        let(:execute_clear_cache) { described_class.new(true, target_year_month).cache }
+        let(:not_execute_clear_cache) { described_class.new(false, target_year_month).cache }
 
         it { expect(execute_clear_cache).to have_received(:clear_cache).once }
         it { expect(execute_clear_cache).not_to have_received(:create_cache) }
@@ -32,12 +36,12 @@ describe Games do
 
       context 'when cache file does not exist' do
         before do
-          create_cache_mock(false, TARGET_YEAR_MONTH)
+          create_cache_mock(false, target_year_month)
           # create_gamesが実行されると時間がかかってしまうので空文字を返すようにする
           allow_any_instance_of(described_class).to receive(:create_games).and_return('')
         end
 
-        let(:cache) { described_class.new(true, TARGET_YEAR_MONTH).cache }
+        let(:cache) { described_class.new(true, target_year_month).cache }
 
         it { expect(cache).to have_received(:clear_cache) }
         it { expect(cache).to have_received(:create_cache).once }
@@ -47,48 +51,48 @@ describe Games do
 
   context 'when not initialize process' do
     let!(:games) do
-      create_cache_mock(false, TARGET_YEAR_MONTH)
+      create_cache_mock(false, target_year_month)
       VCR.use_cassette 'game_list' do
-        described_class.new(true, TARGET_YEAR_MONTH)
+        described_class.new(true, target_year_month)
       end
     end
 
     describe '#set_search_condition' do
       let!(:title) do
-        games.set_search_condition('title', TITLE_CONDITION)
+        games.set_search_condition('title', title_condition)
         games.where[:title]
       end
       let!(:brand_name) do
-        games.set_search_condition('brand_name', BRAND_NAME_CONDITION)
+        games.set_search_condition('brand_name', brand_name_condition)
         games.where[:brand_name]
       end
       let!(:voice_actor) do
-        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
+        games.set_search_condition('voice_actor', voice_actor_condition)
         games.where[:voice_actor]
       end
 
-      it { expect(title).to eq TITLE_CONDITION }
-      it { expect(brand_name).to eq BRAND_NAME_CONDITION }
-      it { expect(voice_actor).to eq VOICE_ACTOR_CONDITION }
+      it { expect(title).to eq title_condition }
+      it { expect(brand_name).to eq brand_name_condition }
+      it { expect(voice_actor).to eq voice_actor_condition }
     end
 
     describe '#game_list' do
       let(:filtering_title) do
-        games.set_search_condition('title', TITLE_CONDITION)
+        games.set_search_condition('title', title_condition)
         games.game_list
       end
       let(:filtering_brand) do
-        games.set_search_condition('brand_name', BRAND_NAME_CONDITION)
+        games.set_search_condition('brand_name', brand_name_condition)
         games.game_list
       end
       let(:filtering_voice_actor) do
-        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
+        games.set_search_condition('voice_actor', voice_actor_condition)
         games.game_list
       end
       let(:filtering_all) do
-        games.set_search_condition('title', TITLE_CONDITION)
-        games.set_search_condition('brand_name', BRAND_NAME_CONDITION)
-        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
+        games.set_search_condition('title', title_condition)
+        games.set_search_condition('brand_name', brand_name_condition)
+        games.set_search_condition('voice_actor', voice_actor_condition)
         games.game_list
       end
       let(:filtering_nothing) { games.game_list }
@@ -102,11 +106,11 @@ describe Games do
 
     describe '#to_json' do
       let!(:json) do
-        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
+        games.set_search_condition('voice_actor', voice_actor_condition)
         JSON.parse(games.to_json)
       end
-      let(:brand_name_includes) { json[3]['brand_name'] == BRAND_NAME_CONDITION }
-      let(:title_includes) { json[3]['title'].include?(TITLE_CONDITION) }
+      let(:brand_name_includes) { json[3]['brand_name'] == brand_name_condition }
+      let(:title_includes) { json[3]['title'].include?(title_condition) }
       let(:voice_actor_includes) { json[3]['voice_actor'].include?('遥そら') }
 
       it { expect(brand_name_includes).to be_truthy }
@@ -122,7 +126,7 @@ describe Games do
 
     describe '#create_json' do
       let(:to_json) do
-        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
+        games.set_search_condition('voice_actor', voice_actor_condition)
         StringIO.new(games.to_json)
       end
       let(:json) { JSON.parse(to_json.string) }
@@ -132,7 +136,7 @@ describe Games do
         games.create_json
       end
 
-      it { expect(json[3]['brand_name']).to eq BRAND_NAME_CONDITION }
+      it { expect(json[3]['brand_name']).to eq brand_name_condition }
     end
 
     describe '#csv_file_path' do
@@ -145,12 +149,12 @@ describe Games do
       let(:string_io) { StringIO.new }
       let(:csv_content) { string_io.read.scan(/\[.*?\]/) }
       let(:header) { csv_content[0] }
-      let(:exists_brand_name) { csv_content[4].include?(BRAND_NAME_CONDITION) }
+      let(:exists_brand_name) { csv_content[4].include?(brand_name_condition) }
       let(:exists_voice_actor) { csv_content[4].include?('遥そら') }
 
       before do
         allow(CSV).to receive(:open).and_yield(string_io)
-        games.set_search_condition('voice_actor', VOICE_ACTOR_CONDITION)
+        games.set_search_condition('voice_actor', voice_actor_condition)
         games.create_csv
         string_io.rewind
       end

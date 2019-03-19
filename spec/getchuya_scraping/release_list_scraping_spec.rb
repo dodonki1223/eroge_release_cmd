@@ -4,7 +4,8 @@ require './spec/spec_helper'
 require './getchuya_scraping/release_list_scraping.rb'
 
 describe ReleaseListScraping do
-  let!(:release_list_scraping) { described_class.new('201903') }
+  let(:target_year_month) { '201902' }
+  let!(:release_list_scraping) { described_class.new(target_year_month) }
 
   describe '#scraping' do
     let(:release_list) do
