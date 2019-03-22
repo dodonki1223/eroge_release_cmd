@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require './spec/spec_helper'
-require './getchuya_scraping/extended_string'
+require './eroge_release/extended_class/extended_string'
 
 describe String do
   describe '#multiple_include?' do

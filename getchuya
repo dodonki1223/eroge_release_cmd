@@ -19,10 +19,10 @@
 #     --simple [SIMPLE]            Display results in a simplified way
 # -------------------------------------------------------------------------
 
-require './getchuya_scraping/command_line_arg.rb'
-require './getchuya_scraping/games.rb'
-require './spreadsheet/spreadsheet.rb'
-require './spreadsheet/spreadsheet_writer.rb'
+require './eroge_release/command_line/command_line_arg'
+require './eroge_release/games/games'
+require './eroge_release/spreadsheet/spreadsheet'
+require './eroge_release/spreadsheet/spreadsheet_writer'
 
 # GoogleスプレッドシートID
 SPREADSHEET_ID = 'Your Sheet Id'
@@ -30,9 +30,9 @@ SPREADSHEET_ID = 'Your Sheet Id'
 # Gamesクラスのインスタンスを取得する
 #   Gamesクラスのインスタンスをキャッシュクリア区分、年月の引数に応じて取得する
 def get_games_instance(has_clear_cache, year_month)
-  return Games.new(has_clear_cache) if year_month.empty?
+  return ErogeRelease::Games.new(has_clear_cache) if year_month.empty?
 
-  Games.new(has_clear_cache, year_month)
+  ErogeRelease::Games.new(has_clear_cache, year_month)
 end
 
 # ゲーム情報を絞り込む
@@ -48,7 +48,7 @@ end
 #   更新対象のワークシート（年月のタイトル）を削除し、新しくワークシートへ
 #   CSVファイルから書き込む
 def write_spreadsheet_by_csv(year_month, csv_file)
-  spreadsheet = SpreadsheetWriter.new(SPREADSHEET_ID)
+  spreadsheet = ErogeRelease::SpreadsheetWriter.new(SPREADSHEET_ID)
 
   # 更新対象のワークシートを削除しCSVファイルから書き込みを行なう
   spreadsheet.delete_worksheet_by_title(year_month)
@@ -123,7 +123,7 @@ end
 # ---------------------------------
 #  コマンドライン引数を取得する
 # ---------------------------------
-command_line_args          = CommandLineArg.new
+command_line_args          = ErogeRelease::CommandLineArg.new
 year_month                 = command_line_args.get(:year_month)       # 年月
 title                      = command_line_args.get(:title)            # 絞り込み用のタイトル
 brand_name                 = command_line_args.get(:brand_name)       # 絞り込み用のブランド名
