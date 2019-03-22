@@ -18,8 +18,10 @@ module ErogeRelease
     end
 
     # キャッシュファイルを作成する
+    #   キャッシュフォルダが存在しない時は作成する
     #   シリアライズしたものをキャッシュファイルとして保存する
     def create_cache(content)
+      Dir.mkdir(@path) unless Dir.exist?(@path)
       File.open(@full_path, 'wb') do |file|
         serialize_file = Marshal.dump(content)
         # 改行なしで書き込む
