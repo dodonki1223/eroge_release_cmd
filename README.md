@@ -33,7 +33,7 @@ Googleスプレッドシートに書き込みをする機能を使用する場�
 9の作成するconfig.jsonのファイル名をgoogle_drive_config.jsonに変更し、下記ディレクトリに設置して下さい  
 
 ```
-eroge_release/eroge_release/spreadsheet/google_drive_config.json
+eroge_release_cmd/eroge_release/spreadsheet/google_drive_config.json
 ```
 
 これ以降の設定は不要です
