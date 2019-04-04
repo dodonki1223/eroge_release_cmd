@@ -24,7 +24,7 @@
 /spec/vcr
 
 # google_drive_config.jsonの除外設定（Googleスプレッドシートの設定）
-/spreadsheet/google_drive_config.json
+eroge_release/spreadsheet/google_drive_config.json
 
 # SimpleCovが作成するファイルの除外
 /coverage

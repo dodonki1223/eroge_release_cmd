@@ -1,4 +1,4 @@
-# eroge_release_bot
+# eroge_release_cmd
 
 ## なんのソフト？
   
@@ -14,8 +14,8 @@
 ## インストール方法
 
 ```shell
-$ git clone https://github.com/dodonki1223/eroge_release_bot.git
-$ cd eroge_release_bot
+$ git clone https://github.com/dodonki1223/eroge_release_cmd.git
+$ cd eroge_release_cmd
 $ bundle install
 ```
 
@@ -33,7 +33,7 @@ Googleスプレッドシートに書き込みをする機能を使用する場�
 9の作成するconfig.jsonのファイル名をgoogle_drive_config.jsonに変更し、下記ディレクトリに設置して下さい  
 
 ```
-eroge_release_bot/eroge_release/spreadsheet/google_drive_config.json
+eroge_release/eroge_release/spreadsheet/google_drive_config.json
 ```
 
 これ以降の設定は不要です
@@ -54,7 +54,7 @@ https://docs.google.com/spreadsheets/u/1/d/xxxxxxxxxxxxxxxxxxxxxxx/edit?usp=driv
 
 
 ```ruby
-# 対象のファイル：eroge_release_bot/getchuya
+# 対象のファイル：eroge_release/getchuya
 
 # GoogleスプレッドシートID
 SPREADSHEET_ID = 'Your Sheet Id'
@@ -139,10 +139,6 @@ $ bundle exec getchuya -c -s
 
 ```shell
 # 2018年5月のキャッシュをクリアする
-# 以前、「bundle exec getchuya -y 201805 -v 遥そら,風音」と実行した時
-# キャッシュファイルは上記のコマンドの内容で保存されるため「bundle exec getchuya -y 201805」
-# を実行すると「bundle exec getchuya -y 201805 -v 遥そら,風音」の内容が表示され
-# のでキャッシュをクリアする必要があります
 
 $ bundle exec getchuya -y 201805 --clear_cache
 ```
