@@ -54,7 +54,7 @@ https://docs.google.com/spreadsheets/u/1/d/xxxxxxxxxxxxxxxxxxxxxxx/edit?usp=driv
 
 
 ```ruby
-# 対象のファイル：eroge_release/getchuya
+# 対象のファイル：eroge_release_cmd/getchuya
 
 # GoogleスプレッドシートID
 SPREADSHEET_ID = 'Your Sheet Id'
