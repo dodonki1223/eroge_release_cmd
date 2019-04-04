@@ -88,8 +88,10 @@ module ErogeRelease
     end
 
     # CSVファイルを作成する
+    #   フォルダが存在しない時はフォルダを作成する
     #   スクレイピングした結果をCSVファイルとして作成する
     def create_csv(csv_file = csv_file_path)
+      Dir.mkdir(CREATED_PATH) unless Dir.exist?(CREATED_PATH)
       # スクレイピングした結果からCSVファイルを新規作成する
       CSV.open(csv_file, 'wb', force_quotes: true) do |csv|
         csv << HEADER_COLUMNS
