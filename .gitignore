@@ -26,5 +26,8 @@
 # google_drive_config.jsonの除外設定（Googleスプレッドシートの設定）
 eroge_release/spreadsheet/google_drive_config.json
 
+# 書き込み用GoogleスプレッドシートのID設定ファイルの除外設定
+eroge_release/spreadsheet/spreadsheet.conf
+
 # SimpleCovが作成するファイルの除外
 /coverage

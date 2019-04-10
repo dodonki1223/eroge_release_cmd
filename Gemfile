@@ -11,6 +11,9 @@ gem 'nokogiri', '~> 1.9'
 # GoogleDriveを使用するためのライブラリ
 gem 'google_drive'
 
+# confファイルの読み込んで使用できるようになるライブラリ
+gem 'inifile'
+
 # 開発用グループ
 group :development do
   # RubyのLintツール

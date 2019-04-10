@@ -33,6 +33,7 @@ GEM
       signet (~> 0.7)
     hashdiff (0.3.8)
     httpclient (2.8.3)
+    inifile (3.0.0)
     jaro_winkler (1.5.2)
     json (2.1.0)
     jwt (2.1.0)
@@ -105,6 +106,7 @@ PLATFORMS
 
 DEPENDENCIES
   google_drive
+  inifile
   nokogiri (~> 1.9)
   rspec (>= 3.8.0)
   rubocop (~> 0.62)
