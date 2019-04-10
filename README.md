@@ -1,5 +1,7 @@
 # eroge_release_cmd
 
+![サンプル](/image/sample.gif)
+
 ## なんのソフト？
   
 [げっちゅ屋](http://www.getchu.com/top.html?gc=gc)の[発売日リスト](http://www.getchu.com/all/price.html?genre=pc_soft&year=2019&month=3&gage=&gall=all)ページをスクレイピングしてその内容をコマンドで確認することができます。  
