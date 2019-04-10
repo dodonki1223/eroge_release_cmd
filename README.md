@@ -122,10 +122,10 @@ $ bundle exec getchuya -v 遥そら,風音 -o
 検索結果の内容でjsonファイル、csvファイルを作成する
 
 ```shell
-# CSVファイルを作成する
+# jsonファイルを作成する
 $ bundle exec getchuya -j
 
-# jsonファイルを作成する
+# CSVファイルを作成する
 $ bundle exec getchuya -c
 ```
 
