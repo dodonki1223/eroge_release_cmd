@@ -32,10 +32,20 @@ Googleスプレッドシートに書き込みをする機能を使用する場�
 ### 1. [google-drive-ruby](https://github.com/gimite/google-drive-ruby)を使用できるようにする 
 
 [google-drive-rubyの認証手順](https://github.com/gimite/google-drive-ruby/blob/master/doc/authorization.md#authorization)の通りに[On behalf of you (command line authorization)](On behalf of you (command line authorization))の8まで進めて下さい  
-9の作成するconfig.jsonのファイル名をgoogle_drive_config.jsonに変更し、下記ディレクトリに設置して下さい  
+client_id、client_secretがわかったらメモして下さい
 
+```shell
+# サンプルファイルからgoogle-drive-rubyの設定ファイルを作成して下さい
+cp eroge_release/spreadsheet/google_drive_config_sample.json eroge_release/spreadsheet/google_drive_config.json
 ```
-eroge_release_cmd/eroge_release/spreadsheet/google_drive_config.json
+
+下記のclient_idとclient_secretにメモした内容を入力してください
+
+```json
+{
+  "client_id": "xxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.apps.googleusercontent.com",
+  "client_secret": "xxxxxxxxxxxxxxxxxxxxxxxx"
+}
 ```
 
 これ以降の設定は不要です
@@ -51,16 +61,37 @@ https://docs.google.com/spreadsheets/u/1/d/xxxxxxxxxxxxxxxxxxxxxxx/edit?usp=driv
 
 `xxxxxxxxxxxxxxxxxxxxxxx`の部分がGoogleスプレッドシートのIDになります
 
+```shell
+# サンプルファイルからGoogleスプレッドシートのの設定ファイルを作成して下さい
+cp eroge_release/spreadsheet/spreadsheet_sample.conf eroge_release/spreadsheet/spreadsheet.conf
+```
 
 下記コードの`Your Sheet Id`の部分に`GoogleスプレッドシートのID`を入力して下さい
 
-
-```ruby
-# 対象のファイル：eroge_release_cmd/getchuya
-
-# GoogleスプレッドシートID
-SPREADSHEET_ID = 'Your Sheet Id'
+```ini
+# 書き込み用GoogleスプレッドシートID設定
+[GoogleSpreadSheet]
+id = Your Sheet ID
 ```
+
+## 3. Googleスプレッドシートへの書き込みの認証を行う
+
+下記コマンドを実行します
+
+```shell
+$ bundle exec getchuya -c -s
+```
+
+実行すると、下記のようなことを聞かれます
+
+```shell
+1. Open this page:
+2. Enter the authorization code shown in the page:
+```
+
+聞かれたら`1. Open this page:`にかかれているURLにアクセスし、画面の通りにするめると`このコードをコピーし、アプリケーションに切り替えて貼り付けてください。`と言われるページまで遷移したらコードをコピーする  
+
+`2. Enter the authorization code shown in the page:`のところにコピーしたコードを貼り付けてEnterを押すことでGoogleスプレッドシートへの書き込みが可能になります
 
 ## 使用方法
 

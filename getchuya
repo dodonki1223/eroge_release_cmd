@@ -23,9 +23,11 @@ require './eroge_release/command_line/command_line_arg'
 require './eroge_release/games/games'
 require './eroge_release/spreadsheet/spreadsheet'
 require './eroge_release/spreadsheet/spreadsheet_writer'
+require 'inifile'
 
-# GoogleスプレッドシートID
-SPREADSHEET_ID = 'Your Sheet Id'
+# GoogleスプレッドシートIDの読み込み
+@ini_file = IniFile.load('./eroge_release/spreadsheet/spreadsheet.conf')
+SPREADSHEET_ID = @ini_file['GoogleSpreadSheet']['id']
 
 # Gamesクラスのインスタンスを取得する
 #   Gamesクラスのインスタンスをキャッシュクリア区分、年月の引数に応じて取得する
