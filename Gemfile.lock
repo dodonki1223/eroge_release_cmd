@@ -44,7 +44,7 @@ GEM
     mini_portile2 (2.4.0)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    nokogiri (1.10.1)
+    nokogiri (1.10.4)
       mini_portile2 (~> 2.4.0)
     os (1.0.0)
     parallel (1.13.0)
@@ -107,7 +107,7 @@ PLATFORMS
 DEPENDENCIES
   google_drive
   inifile
-  nokogiri (~> 1.9)
+  nokogiri (~> 1.10)
   rspec (>= 3.8.0)
   rubocop (~> 0.62)
   rubocop-rspec
