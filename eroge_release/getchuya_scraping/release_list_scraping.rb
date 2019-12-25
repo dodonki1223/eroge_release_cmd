@@ -35,11 +35,11 @@ module ErogeRelease
       raise ArgumentError, '年が不正です（2012年より指定して下さい）' unless @year.to_i.between?(2012, 2999)
       raise ArgumentError, '月が不正です（01〜12で指定して下さい）'  unless @month.to_i.between?(1, 12)
 
-      @url_param_year      = ['year', @year]                   # 年月の文字列から「年」のURLパラメーターを作成
-      @url_param_month     = ['month', @month]                 # 年月の文字列から「月」のURLパラメーターを作成
-      @release_list        = []                                # XXXX年XX月のゲームの発売リストを保持する変数に初期値をセット
-      @fixed_url_parameter = [%w[genre pc_soft], %w[gall all]] # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページの固定のURLパラメーター
-      @uri                 = target_uri                        # スクレイピングする対象のURLをセット
+      @url_param_year      = ['year', @year]                                   # 年月の文字列から「年」のURLパラメーターを作成
+      @url_param_month     = ['month', @month]                                 # 年月の文字列から「月」のURLパラメーターを作成
+      @release_list        = []                                                # XXXX年XX月のゲームの発売リストを保持する変数に初期値をセット
+      @fixed_url_parameter = [%w[genre pc_soft], %w[gall all], %w[gage adult]] # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページの固定のURLパラメーター(アダルトの作品のみを対象とする)
+      @uri                 = target_uri                                        # スクレイピングする対象のURLをセット
     end
 
     # スクレイピング

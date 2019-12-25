@@ -102,7 +102,7 @@ module ErogeRelease
         it { expect(filtering_brand.count).to eq(1) }
         it { expect(filtering_voice_actor.count).to eq(4) }
         it { expect(filtering_all.count).to eq(1) }
-        it { expect(filtering_nothing.count).to eq(69) }
+        it { expect(filtering_nothing.count).to eq(62) }
       end
 
       describe '#to_json' do
