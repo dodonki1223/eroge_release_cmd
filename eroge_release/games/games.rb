@@ -129,7 +129,7 @@ module ErogeRelease
       release_list.each do |game|
         # ゲームの紹介ページからスクレイピングし「パッケージ画像」、「ブランドページ」、「声優情報」を取得する
         introduction_page = IntroductionPageScraping.new(game[:id])
-        # 「月発売タイトル一覧・ゲーム」と「パッケージ画像」、「ブランドページ」、「声優情報」をマージする
+        # 「月発売タイトル一覧・ゲーム」と「パッケージ画像」、「ブランドID」、「ブランドページ」、「声優情報」をマージする
         game_info = game.merge(introduction_page.scraping)
         games.push(game_info)
       end
