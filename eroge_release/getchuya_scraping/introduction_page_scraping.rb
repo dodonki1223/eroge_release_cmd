@@ -34,6 +34,7 @@ module ErogeRelease
       # 紹介ページからゲーム情報をスクレイピングする
       @game_info[:package_image] = scraping_package_image(parsed_html)
       @game_info[:brand_page]    = scraping_brand_page(parsed_html)
+      @game_info[:brand_id]      = scraping_brand_id(parsed_html)
       @game_info[:voice_actor]   = scraping_voice_actors(parsed_html)
       @game_info
     end
@@ -70,6 +71,20 @@ module ErogeRelease
       end
       # 何も取得出来なかった時は空文字を返す
       # ※パッケージ画像がない時は何も取得出来ないため
+      ''
+    end
+
+    # 対象のゲームのブランドのIDをスクレイピングする
+    #   ブランドIDを取得し返す
+    def scraping_brand_id(html)
+      html.css('table > tr > td > nobr > a').each do |a|
+        # 対象のゲームのブランド作品の一覧でなかったら次の要素へ
+        next unless a.text.include?('（このブランドの作品一覧）')
+
+        uri = URI::parse(a[:href])
+        querys = URI.decode_www_form(uri.query)
+        return querys.assoc('search_brand_id').last
+      end
       ''
     end
 
