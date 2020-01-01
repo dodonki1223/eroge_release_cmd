@@ -16,10 +16,11 @@ module ErogeRelease
       end
 
       # game_infoがHashで３つのKeyを持つかテスト
-      it { expect(game_info).to include(:package_image, :brand_page, :voice_actor) }
+      it { expect(game_info).to include(:package_image, :brand_id, :brand_page, :voice_actor) }
 
       # スクレイピングした結果、値が取得できていることをテスト
       it { expect(game_info[:package_image]).not_to eq '' }
+      it { expect(game_info[:brand_id]).not_to eq '' }
       it { expect(game_info[:brand_page]).not_to eq '' }
       it { expect(game_info[:voice_actor]).not_to eq '' }
     end
