@@ -21,7 +21,7 @@ module ErogeRelease
     # キャッシュファイルが格納されるディレクトリ
     CACHE_PATH = "#{__dir__}/../../cache/"
     # CSV用のヘッダーカラム情報
-    HEADER_COLUMNS = %w[id release_date title package_image price introduction_page brand_name brand_page voice_actor].freeze
+    HEADER_COLUMNS = %w[id release_date title package_image price introduction_page brand_id brand_name brand_page voice_actor].freeze
 
     # コンストラクタ
     #   クラス内で使用するインスタンス変数をセットする
@@ -103,6 +103,7 @@ module ErogeRelease
             game[:package_image],
             game[:price],
             game[:introduction_page],
+            game[:brand_id],
             game[:brand_name],
             game[:brand_page],
             game[:voice_actor].join('、')
