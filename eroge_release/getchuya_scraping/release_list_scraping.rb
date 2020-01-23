@@ -12,7 +12,7 @@ module ErogeRelease
     # げっちゅ屋の「月別発売タイトル一覧・ゲーム」ページURL
     RELEASE_LIST_URI = ROOT_URI + '/all/price.html'
     # ゲームの紹介ページの共通URL
-    INTRODUCTION_PAGE_URI = ROOT_URI + '/all/'
+    INTRODUCTION_PAGE_URI = ROOT_URI + '/soft.phtml?id='
 
     # コンストラクタ
     #   年月の文字列を引数で受け取り、不正だった場合は例外を発生させる
@@ -64,8 +64,8 @@ module ErogeRelease
         tr.css('td').each do |td|
           game[:release_date]      = "#{@year}/#{scraping_date(td)}" unless scraping_date(td).nil?
           game[:title]             = scraping_title(td) unless scraping_title(td).nil?
-          game[:introduction_page] = scraping_introduction_page(td) unless scraping_introduction_page(td).nil?
           game[:id]                = scraping_id(td) unless scraping_id(td).nil?
+          game[:introduction_page] = INTRODUCTION_PAGE_URI + game[:id] unless game[:id].nil?
           game[:brand_name]        = scraping_brand_name(td) unless scraping_brand_name(td).nil?
           game[:price]             = scraping_price(td) unless scraping_price(td).nil?
         end
@@ -106,14 +106,6 @@ module ErogeRelease
       if td[:align].to_s.include?('left')
         # <a>タグが存在すること
         return td.content unless td.css('a').empty?
-      end
-    end
-
-    # ソフト紹介ページをスクレイピングする
-    #   ソフト紹介ページ <tr align="left">の部分を取得し返す
-    def scraping_introduction_page(td)
-      if td[:align].to_s.include?('left')
-        return INTRODUCTION_PAGE_URI + td.css('a').first[:href].to_s unless td.css('a').empty?
       end
     end
 
