@@ -32,4 +32,8 @@ group :development do
   gem 'vcr'
   # テストカバレッジを取得
   gem 'simplecov'
+  # デバッグツール
+  gem 'pry', '~> 0.13'
+  gem 'pry-byebug', '~> 3.9'
+  gem 'pry-doc', '~> 1.1'
 end
