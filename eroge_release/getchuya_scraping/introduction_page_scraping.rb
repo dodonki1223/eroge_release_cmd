@@ -81,7 +81,7 @@ module ErogeRelease
         # 対象のゲームのブランド作品の一覧でなかったら次の要素へ
         next unless a.text.include?('（このブランドの作品一覧）')
 
-        uri = URI::parse(a[:href])
+        uri = URI.parse(a[:href])
         querys = URI.decode_www_form(uri.query)
         return querys.assoc('search_brand_id').last
       end
