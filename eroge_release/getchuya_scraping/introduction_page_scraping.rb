@@ -77,9 +77,9 @@ module ErogeRelease
     # 対象のゲームのブランドのIDをスクレイピングする
     #   ブランドIDを取得し返す
     def scraping_brand_id(html)
-      html.css('table > tr > td > nobr > a').each do |a|
+      html.css('table > tr > td > a').each do |a|
         # 対象のゲームのブランド作品の一覧でなかったら次の要素へ
-        next unless a.text.include?('（このブランドの作品一覧）')
+        next unless a.text.include?('このブランドの作品一覧')
 
         uri = URI.parse(a[:href])
         querys = URI.decode_www_form(uri.query)

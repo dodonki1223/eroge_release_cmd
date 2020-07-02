@@ -19,6 +19,7 @@
 require 'webmock/rspec'
 require 'simplecov'
 require 'vcr'
+require 'pry'
 
 # SimpleCovのロード処理
 SimpleCov.start
