@@ -37,7 +37,7 @@ GEM
     httpclient (2.8.3)
     inifile (3.0.0)
     jaro_winkler (1.5.2)
-    json (2.1.0)
+    json (2.3.1)
     jwt (2.1.0)
     memoist (0.16.0)
     method_source (1.0.0)
