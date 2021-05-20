@@ -6,7 +6,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 # スクレイピングをするためのライブラリ
 # ※1.10.0以上2.0.0未満の最新のものを使用
-gem 'nokogiri', '~> 1.10'
+gem 'nokogiri', '~> 1.11'
 
 # GoogleDriveを使用するためのライブラリ
 gem 'google_drive'
