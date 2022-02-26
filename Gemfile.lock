@@ -44,11 +44,11 @@ GEM
     mime-types (3.2.2)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2018.0812)
-    mini_portile2 (2.6.1)
+    mini_portile2 (2.8.0)
     multi_json (1.13.1)
     multipart-post (2.0.0)
-    nokogiri (1.12.5)
-      mini_portile2 (~> 2.6.1)
+    nokogiri (1.13.2)
+      mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     os (1.0.0)
     parallel (1.13.0)
@@ -65,7 +65,7 @@ GEM
       pry (~> 0.11)
       yard (~> 0.9.11)
     public_suffix (3.0.3)
-    racc (1.5.2)
+    racc (1.6.0)
     rainbow (3.0.0)
     representable (3.0.4)
       declarative (< 0.1.0)
@@ -122,7 +122,7 @@ PLATFORMS
 DEPENDENCIES
   google_drive
   inifile
-  nokogiri (~> 1.12)
+  nokogiri (~> 1.13)
   pry (~> 0.13)
   pry-byebug (~> 3.9)
   pry-doc (~> 1.1)
